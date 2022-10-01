@@ -1,0 +1,12 @@
+name: amex
+channels:
+- defaults
+dependencies:
+- matplotlib
+- numpy
+- imageio
+- scikit-learn
+- notebook
+- jupyterlab
+- scikit-image
+- pandas
