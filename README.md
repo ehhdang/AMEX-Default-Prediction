@@ -1,5 +1,5 @@
-# AMEX_DefaultPrediction
-Final Project for Georgia Tech's CS 7641 with Dr. Roozbahani
+# AMEX Default Prediction
+Group 37: _Hassan Naveed, Aditi Prakash, Emma Dang, Amritpal Singh_
 
 ## Introduction/Background
 
