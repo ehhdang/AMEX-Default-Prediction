@@ -12,5 +12,5 @@ Group 37: _Hassan Naveed, Aditi Prakash, Emma Dang, Amritpal Singh_
 ## Citations
 
 ## Proposed Timeline
-
+https://docs.google.com/spreadsheets/d/1NwSPawBI_k9x3xHloXmnbROMbCaqwuFalB0XVgNrCJ8/edit?usp=sharing
 ## Contribution Table
