@@ -31,9 +31,7 @@ Group 37: _Hassan Naveed, Aditi Prakash, Emma Dang, Amritpal Singh_
 The project's timeline and task breakdown is detailed in this [Gantt chart](https://docs.google.com/spreadsheets/d/1NwSPawBI_k9x3xHloXmnbROMbCaqwuFalB0XVgNrCJ8/edit?usp=sharing).
 
 ## Contribution Table
-| Member | Contribution |
-| --- | --- |
-| Hassan Naveed | Select supervised models; Code and analyze supervised models |
-| Aditi Prakash | Select supervised models; Code and analyze supervised models |
-| Emma Dang | Clean and preprocess data into a usable form; Code and analyze unsupervised models |
-| Amritpal Singh | Select unsupervised models; Code and analyze unsupervised models |
+ - Hassan Naveed : Select supervised models; Code and analyze supervised models
+ - Aditi Prakash : Select supervised models; Code and analyze supervised models 
+ - Emma Dang : Clean and preprocess data into a usable form; Code and analyze unsupervised models 
+ - Amritpal Singh : Select unsupervised models; Code and analyze unsupervised models 
