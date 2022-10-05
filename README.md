@@ -34,8 +34,8 @@ The best performing models achieve scores of 0.80 in this metric, and we hope to
 ## Proposed Timeline
 The project's timeline and task breakdown is detailed in this [Gantt chart](https://docs.google.com/spreadsheets/d/1NwSPawBI_k9x3xHloXmnbROMbCaqwuFalB0XVgNrCJ8/edit?usp=sharing).
 
-## Contribution Table
- - Hassan Naveed : Select supervised models; Code and analyze supervised models
- - Aditi Prakash : Select supervised models; Code and analyze supervised models 
- - Emma Dang : Clean and preprocess data into a usable form; Code and analyze unsupervised models 
- - Amritpal Singh : Select unsupervised models; Code and analyze unsupervised models 
+## Contribution Table for Project Proposal
+ - Hassan Naveed : Methods, Result, and Discussion for the supervised portion.
+ - Aditi Prakash : Introduction, Background, and Problem Definition.
+ - Emma Dang : GitHub Pages, Proposed Timeline, and Contribution Table.
+ - Amritpal Singh : Method, Result, and Discussion for the unsupervised portion.
