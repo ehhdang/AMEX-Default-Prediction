@@ -12,14 +12,18 @@ Group 37: _Hassan Naveed, Aditi Prakash, Emma Dang, Amritpal Singh_
 > _TO BE FILLED_
 
 ### Supervised
-> _TO BE FILLED_
+This is primarily a Supervised Learning problem which requires binary classification. The models which have shown promise with previous work [1,3] are:
+1)	Gradient Boosting (GB): Boosted trees (available through sklearn) have had great performance in credit risk modelling. However, since trees cannot make use of temporal information, the features would need to be aggregated at customer level.
+2)	Neural Networks: A similar approach as (1) can be experimented with Feed-forward networks. The temporal nature of the data make is suitable for Long Short Term Memory (LSTM) networks, and the fixed number of periodicity might permit the use of transformers.
+
+We not only hope to compare these approaches, but also ensemble them together to get our best performing model.
 
 ## Results & Discussion
-### Unsupervised
-> _TO BE FILLED_
+The models would be tested according to the competition metric. This consists of the average of:
+-	Normalized Gini Coefficient (G)
+-	Default rate at 4% (D). This captures a Sensitivity/Recall statistic by calculating the portion of defaults in the highest ranked 4% of predictions
 
-### Supervised 
-> _TO BE FILLED_
+The best performing models achieve scores of 0.80 in this metric, and we hope to achieve accuracy close to that. In addition, models would also be compared using common binary classification metrics such as AUC, Accuracy, Precision, etc.
 
 ## References
 1. [Machine Learning: Challenges, Lessons, and Opportunities in Credit Risk Modelling](https://www.moodysanalytics.com/risk-perspectives-magazine/managing-disruption/spotlight/machine-learning-challenges-lessons-and-opportunities-in-credit-risk-modeling) 
