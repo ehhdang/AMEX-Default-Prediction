@@ -9,7 +9,10 @@ Group 37: _Hassan Naveed, Aditi Prakash, Emma Dang, Amritpal Singh_
 
 ## Methods:
 ### Unsupervised
-> _TO BE FILLED_
+Role of unsupervised learning will be to understand the hidden data structures for better feature processing. 
+1) Clustering algorithms: visualise the data to allow better feature processsing.
+2) Dimension reductionality (tSNE and PCA): Given total 200+ features, methods like tSNE and PCA can help visualize the data points and choose relevant features. Reduced feature count could also help boost training speed for supervised methods.
+
 
 ### Supervised
 This is primarily a Supervised Learning problem which requires binary classification. The models which have shown promise with previous work [1,3] are:
