@@ -2,10 +2,10 @@
 Group 37: _Hassan Naveed, Aditi Prakash, Emma Dang, Amritpal Singh_
 
 ## Introduction/Background
-> _TO BE FILLED_
+With credit-based spending dominating modern consumer behavior around the world, it is critical for credit issuers to assess the risk associated with their practice in order to minimize the impact of credit defaulting and ensure greater sustainability of both borrowing and lending in the long term. While manual assessment of financial statements and direct calculation of the default probability with models like the Merton model and metrics such as the price of a credit default swap and other macroeconomic conditions of the time of default are widely leveraged today by lenders. However, these methods are often too generic to capture credit risk at the correct level of granularity and often make oversimplifying assumptions that lead to error during risk assessment. While decision trees, clustering models, and logistic regression have been leveraged to predict credit defaulting based on the large amount of data available mapping consumer demographic and spending data to the credit risk of lending, these models rely on an unmanageable large variety of features and could continue to improve in accuracy. The AMEX dataset we will be using contains features describing the spending, payment, balance, and risk-informative datapoints for AMEX customers across an 18-month period, and the target variable is the probability of the customer's most recent credit card statement being defaulted. 
 
 ## Problem Definition
-> _TO BE FILLED_
+Explore machine learning techniques for more accurate credit default risk prediction based on a relatively small-sized but effective feature set. 
 
 ## Methods:
 ### Unsupervised
