@@ -11,7 +11,7 @@ Decision trees, clustering models, and logistical regression are used today to p
 ### Unsupervised
 The role of unsupervised learning will be to understand the hidden data structures for better feature processing. 
 1) Clustering algorithms: visualize the data to allow better feature processing.
-2) Dimensionality reduction (tSNE and PCA): Given a total of 190+ features, methods like tSNE and PCA can help visualize the data points and choose relevant features. Reduced feature count could also help boost training speed for supervised methods.
+2) Dimensionality reduction (PCA, tSNE and UMAP): Given a total of 190+ features, methods like tSNE and PCA can help visualize the data points and choose relevant features. Reduced feature count could also help boost training speed for supervised methods.
 
 
 ### Supervised
