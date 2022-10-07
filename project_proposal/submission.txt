@@ -1,2 +1,10 @@
 GitHub page: https://ehhdang.github.io/AMEX-Default-Prediction/
-Proposal video: https://youtu.be/jnvPqwkNMQw
+Presentation video: https://youtu.be/jnvPqwkNMQw
+Group Number: 37
+Group Members:
+- Emma Dang
+- Hassan Naveed
+- Aditi Prakash
+- Amritpal Singh
+Project Title: AMEX Default Prediction
+
