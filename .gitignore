@@ -1,4 +1,4 @@
-.ipynb_checkpoints
 .DS_Store
 dataset
-DataCleaning/csv
+DataCleaning
+*/__pycache__
