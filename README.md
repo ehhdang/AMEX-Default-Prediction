@@ -21,10 +21,24 @@ The training data contains a total of 190 features and contains 3 types of varia
 The training labels are binary: 1 means default while 0 means otherwise. There are a total of 458,913 labels, each of which corresponds to an unique customer ID. There is no NaN values in the labels.
 
 ### Data Preprocessing
-1. Predict missing values with mean/mode of features.  
-We will replace the NaN values with the means of data points for each numerical feature and with the mode of the data points for each string feature. 
-1. Dimensionality Reduction.  
-In machine learning, the best models usually learn from a few features that explains the most variance in the data set. Focusing on a smaller set of features accelarates the training time and reduces the computation resources. Thus, we will use PCA method to reduce 190 features in our original data set to approximately 10 features that capture the highest amount of variance.
+1. Convert categorical features to numerical features
+<center>
+
+| Feature      | Description | Value Range     |
+| :---:        |    :----:   |         :---:   |
+| `customer_ID`| customer ID  | 458,913 unique ID  |
+| `S_2` | Statement date       | Various datetime values      |
+| `D_63` | Deliquency variable       | `['CR', 'CO', 'CL', 'XZ', 'XM', 'XL']`      |
+| `D_64` | Deliquency variable       | `['O', 'R', nan, 'U', '-1']`      |
+</center> 
+
+We will use an ordinal encoder to encode `D_63` and `D_64` features because deliquency variables tend to follow a logical ordering.
+
+2. Predict missing values with mean/mode of features.  
+For each feature, we will replace missing data with the mean of the complete data that has a matching label.
+3. Dimensionality Reduction.  
+In machine learning, the best models usually learn from a few features that explains the most variance in the data set. Focusing on a smaller set of features accelarates the training time and reduces the computation resources. We will use PCA to reduce dimensionality of our data set. Figure 1 shows that we need 2 PCA components to capture 99% of the variance in our dataset.
+![Cumulative Variances](images/pca/cumulative_variance.png)*Figure 1: Cumulative variances of PCA components.*  
 
 ## Methods:
 ### Unsupervised

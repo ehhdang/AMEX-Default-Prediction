@@ -10,6 +10,7 @@ dependencies:
 - jupyterlab
 - scikit-image
 - pandas
+- tqdm
 - pip
   - azure-storage-blob
   - python-dotenv
