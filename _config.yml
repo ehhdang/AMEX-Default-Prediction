@@ -1,3 +1,5 @@
-remote_theme: pages-themes/tactile@v0.2.0
+remote_theme: pages-themes/architect@v0.2.0
+plugins:
+- jekyll-remote-theme
 title: AMEX Default Prediction 
-description: Georgia Tech's CS 7641 Final Project with Dr. Roozbahani in Fall 2022
+description: Georgia Tech's CS 7641 Fall'22 Project with Dr. Roozbahani
