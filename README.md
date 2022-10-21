@@ -7,6 +7,25 @@ With credit-based spending dominating modern consumer behavior and 70% of Americ
 ## Problem Definition
 Decision trees, clustering models, and logistical regression are used today to predict credit defaulting based on data that maps consumer demographic and spending data to the credit risk of lending. These models rely on an unmanageably large variety of features and could continue to improve in accuracy. Our AMEX dataset contains features describing spending, payment, balance, and risk-informative measures for AMEX customers across a sample 18-month period, and the target variable is the probability of the customer's most recent credit card statement being defaulted. The goal of this project is to further explore machine learning techniques for more accurate credit default risk prediction based on a relatively small but effective feature set.
 
+## Data Collection and Preprocessing
+### Data Collection
+We obtain the data set from the [AMEX Default Prediction](https://www.kaggle.com/competitions/amex-default-prediction/overview) competition on Kaggle. According to the official competition site, the data contains profile features for each customer at the statement date. All features have been anonymized, normalized, and fall into these categories:
+- D_*: Delinquency features
+- S_*: Spend features
+- P_*: Payment features
+- B_*: Balance features
+- R_*: Risk features
+
+The training data contains a total of 190 features and contains 3 types of variables: `float` (185 features), `int` (1 feature), `string` (4 features). There are 5,531,450 data points. An initial observation reveals that __*120/190*__ features contain NaN values. Approximately 75% of the features have less than 10% NaN values. Some features like D_87 and B_39 are heavy in NaN values, with more than 90% of the data points being NaN. An initial reaction would be to discard features like D_87 which has 99.93 NaN values; however, 0.07% of the data points is roughly 4,000 data points. Without any doubt, we need to perform some data preprocessing to predict the values of these NaN values.
+
+The training labels are binary: 1 means default while 0 means otherwise. There are a total of 458,913 labels, each of which corresponds to an unique customer ID. There is no NaN values in the labels.
+
+### Data Preprocessing
+1. Predict missing values with mean/mode of features.  
+We will replace the NaN values with the means of data points for each numerical feature and with the mode of the data points for each string feature. 
+1. Dimensionality Reduction.  
+In machine learning, the best models usually learn from a few features that explains the most variance in the data set. Focusing on a smaller set of features accelarates the training time and reduces the computation resources. Thus, we will use PCA method to reduce 190 features in our original data set to approximately 10 features that capture the highest amount of variance.
+
 ## Methods:
 ### Unsupervised
 The role of unsupervised learning will be to understand the hidden data structures for better feature processing. 
