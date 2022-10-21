@@ -23,16 +23,12 @@ The training labels are binary: 1 means default while 0 means otherwise. There a
 ### Data Preprocessing
 1. Convert categorical features to numerical features
 
-<center>
-
 | Feature      | Description | Value Range     |
 | :---:        |    :----:   |         :---:   |
 | `customer_ID`| customer ID  | 458,913 unique ID  |
 | `S_2` | Statement date       | Various datetime values      |
 | `D_63` | Deliquency variable       | `['CR', 'CO', 'CL', 'XZ', 'XM', 'XL']`      |
 | `D_64` | Deliquency variable       | `['O', 'R', nan, 'U', '-1']`      |
-
-</center> 
 
 We will use an ordinal encoder to encode `D_63` and `D_64` features because deliquency variables tend to follow a logical ordering.
 
