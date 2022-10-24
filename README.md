@@ -43,15 +43,20 @@ Data visualization is an important step in machine learning. With a good visuali
 
 PCA identifies the combination of attributes, or principle components in the feature space, that explains the most variance in the data. Here, we plot the cumulative variance explained by the principle components of the AMEX dataset. To capture 95% of the variance, we need at least 42 components. 
 
-![Cumulative Variances](images/pca/cumulative_variance.png)*Figure 1: Cumulative variances of PCA components.*
+![Cumulative Variances](images/pca/cumulative_variance.png)
+*Figure 1: Cumulative variances of PCA components.*
 
 The figure below shows the scatter plot of the training dataset projected onto three PCA components that capture the most variance. The data corresponding to the compliance class is mapped to a turquoise color, while the data corresponding to the default class is mapped to a dark orange color. There is a large overlap between the compliance class and the default class, showing the challenge of the classification task.
 
-![3D Data Projection on PCA Components](images/pca/pca_projection_3D.png)*Figure 2: Training Data Projection on three PCA Components with the Highest Variance.*
+![3D Data Projection on PCA Components](images/pca/pca_projection_3D.png)
+
+*Figure 2: Training Data Projection on three PCA Components with the Highest Variance.*
 
 The next figure shows the relationship between the first seven PCA components. The turquoise color represents the compliance-class data, and the dark orange color represents the default-class data. According to the figure, no combination of two features offers a good separation of the two classes. The significant amount of overlap suggests that we should consider a supervised dimensionality reduction method, such as _Linear Discriminant Analysis (LDA)_, because our dataset has labels.
 
-![2D Data Projection on PCA Components](images/pca/pca_projection_2D.png)*Figure 3: Training Data Projection on seven PCA Components with the Highest Variance.*
+![2D Data Projection on PCA Components](images/pca/pca_projection_2D.png)
+
+*Figure 3: Training Data Projection on seven PCA Components with the Highest Variance.*
 
 
 
