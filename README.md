@@ -34,8 +34,9 @@ We will use an ordinal encoder to encode `D_63` and `D_64` features because deli
 
 2. Predict missing values with mean/mode of features.  
 For each feature, we will replace missing data with the mean of the complete data that has a matching label.
+
 3. Dimensionality Reduction.  
-In machine learning, the best models usually learn from a few features that explains the most variance in the data set. Focusing on a smaller set of features accelarates the training time and reduces the computation resources. We will use PCA to reduce dimensionality of our data set. Figure 1 shows that we need 2 PCA components to capture 99% of the variance in our dataset.
+In machine learning, the best models usually learn from a few features that explains the most variance in the data set. Focusing on a smaller set of features accelarates the training time and reduces the computation resources. We will use PCA to reduce dimensionality of our data set. Figure 1 shows that we need 42 PCA components to capture 95% of the variance in our dataset.
 ![Cumulative Variances](images/pca/cumulative_variance.png)*Figure 1: Cumulative variances of PCA components.*  
 
 ## Methods:
