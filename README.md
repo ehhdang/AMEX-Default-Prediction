@@ -21,7 +21,7 @@ The training data contains a total of 190 features and contains 3 types of varia
 The training labels are binary: 1 means default while 0 means otherwise. There are a total of 458,913 labels, each of which corresponds to an unique customer ID. There is no NaN values in the labels.
 
 ### Data Preprocessing
-1. Convert categorical features to numerical features
+1. Encode categorical features.
 
 | Feature      | Description | Value Range     |
 | :---:        |    :----:   |         :---:   |
@@ -30,14 +30,30 @@ The training labels are binary: 1 means default while 0 means otherwise. There a
 | `D_63` | Deliquency variable       | `['CR', 'CO', 'CL', 'XZ', 'XM', 'XL']`      |
 | `D_64` | Deliquency variable       | `['O', 'R', nan, 'U', '-1']`      |
 
-We will use an ordinal encoder to encode `D_63` and `D_64` features because deliquency variables tend to follow a logical ordering.
+We use an ordinal encoder to encode `D_63` and `D_64` features because deliquency variables tend to follow a logical ordering.
 
-2. Predict missing values with mean/mode of features.  
-For each feature, we will replace missing data with the mean of the complete data that has a matching label.
+2. Predict missing values.  
+For each feature, we replace missing data with the mean of the complete data that has a matching label.
 
-3. Dimensionality Reduction.  
-In machine learning, the best models usually learn from a few features that explains the most variance in the data set. Focusing on a smaller set of features accelarates the training time and reduces the computation resources. We will use PCA to reduce dimensionality of our data set. Figure 1 shows that we need 42 PCA components to capture 95% of the variance in our dataset.
-![Cumulative Variances](images/pca/cumulative_variance.png)*Figure 1: Cumulative variances of PCA components.*  
+3. Normalize data.
+Next, we normalize the data so that it has the range between 0 and 1. 
+
+## Data Visualization    
+Data visualization is an important step in machine learning. With a good visualization, we can discover trends, patterns, insights into the data. In this section, we attempt to visualize the AMEX dataset. This is a challenging task because of the large number of features. To ease this task, we reduce the dimensionality of the data by using _Principle Component Analysis (PCA)_. 
+
+PCA identifies the combination of attributes, or principle components in the feature space, that explains the most variance in the data. Here, we plot the cumulative variance explained by the principle components of the AMEX dataset. To capture 95% of the variance, we need at least 42 components. 
+
+![Cumulative Variances](images/pca/cumulative_variance.png)*Figure 1: Cumulative variances of PCA components.*
+
+The figure below shows the scatter plot of the training dataset projected onto three PCA components that capture the most variance. The data corresponding to the compliance class is mapped to a turquoise color, while the data corresponding to the default class is mapped to a dark orange color. There is a large overlap between the compliance class and the default class, showing the challenge of the classification task.
+
+![3D Data Projection on PCA Components](images/pca/pca_projection_3D.png)*Figure 2: Training Data Projection on three PCA Components with the Highest Variance*
+
+The next figure shows the relationship between the first seven PCA components. The turquoise color represents the compliance-class data, and the dark orange color represents the default-class data. According to the figure, no combination of two features offers a good separation of the two classes. The significant amount of overlap suggests that we should consider a supervised dimensionality reduction method, such as _Linear Discriminant Analysis (LDA)_, because our dataset has labels.
+
+![2D Data Projection on PCA Components](images/pca/pca_projection_2D.png)*Figure 3: Training Data Projection on seven PCA Components with the Highest Variance*
+
+
 
 ## Methods:
 ### Unsupervised
