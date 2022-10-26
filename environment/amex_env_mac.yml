@@ -4,6 +4,7 @@ channels:
 dependencies:
 - matplotlib
 - numpy
+    - 1.20.0
 - imageio
 - scikit-learn
 - notebook

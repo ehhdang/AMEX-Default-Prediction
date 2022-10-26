@@ -52,7 +52,7 @@ The figure below shows the scatter plot of the training dataset projected onto t
 
 *Figure 2: Training Data Projection on three PCA Components with the Highest Variance.*
 
-The next figure shows the relationship between the first seven PCA components. The turquoise color represents the compliance-class data, and the dark orange color represents the default-class data. According to the figure, no combination of two features offers a good separation of the two classes. The significant amount of overlap suggests that we should consider a supervised dimensionality reduction method, such as _Linear Discriminant Analysis (LDA)_, because our dataset has labels.
+The next figure shows the relationship between the first seven PCA components. The turquoise color represents the compliance-class data, and the dark orange color represents the default-class data. According to the figure, no combination of two features offers a good separation of the two classes. The large amount of overlap suggests that the regression model to separate the two class will be highly nonlinear.
 
 ![2D Data Projection on PCA Components](images/pca/pca_projection_2D.png)
 
