@@ -41,7 +41,7 @@ Next, we normalize the data so that it has the range between 0 and 1.
 ## Data Visualization    
 Data visualization is an important step in machine learning. With a good visualization, we can discover trends, patterns, insights into the data. In this section, we attempt to visualize the AMEX dataset. This is a challenging task because of the large number of features. To ease this task, we reduce the dimensionality of the data by using _Principle Component Analysis (PCA)_. 
 
-PCA identifies the combination of attributes, or principle components in the feature space, that explains the most variance in the data. Here, we plot the cumulative variance explained by the principle components of the AMEX dataset. To capture 95% of the variance, we need at least 42 components. 
+PCA identifies the combination of attributes, or principle components in the feature space, that explains the most variance in the data. Here, we plot the cumulative variance explained by the principle components of the AMEX dataset. To capture 95% of the variance, we need at least 43 components. 
 
 ![Cumulative Variances](images/pca/cumulative_variance.png)
 *Figure 1: Cumulative variances of PCA components.*
