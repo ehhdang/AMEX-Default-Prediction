@@ -111,7 +111,19 @@ The role of unsupervised learning will be to understand the hidden data structur
 2) Dimensionality reduction (PCA, tSNE and UMAP): Given a total of 190+ features, methods like tSNE and PCA can help visualize the data points and choose relevant features. Reduced feature count could also help boost training speed for supervised methods.
 
 #### KMeans
-The Kmeans algorithm separates train data into n clusters that minimizes the distance between the data points and the cluster centroids. Because our problem is a binary classification, we use Kmeans to divide our post-PCA processed data into two clusters and classify each cluster based on the majority of the votes of the k-nearest neighbors.
+The Kmeans algorithm separates data into n clusters that minimizes the distance between the data points and the cluster centroids. Because our problem is a binary classification, we use Kmeans to divide our post-PCA processed data into two clusters and classify each cluster based on the majority of the votes of the k-nearest neighbors. Our Kmeans model has a silhouette score of __0.188__, which indicates a large overlap of the two clusters. Being a non-parametric clustering algorithm, Kmeans is not powerful enough to handle the non-linear separation of our data classes. 
+
+We do a more in-depth analysis of our Kmeans model by looking at several external metrics. The accuracy of the model is 76.52% on testing data. This low accuracy comes from the model's inability to precisely predict default customers. In the confusion matrix figure below, the default cluster has roughly the same number of default data points as compliant data point. As a result, the default cluster has a low precision score of 0.52. On the other hand, the compliance cluster has a good precision score of 0.91. The Kmeans model predicts default class poorly and thus should not be a predictive model of our problem, despite giving a good prediction of the compliance class. The table below summarizes other externals metrics on this Kmeans model. 
+
+![Kmeans Confusion Matrix](images/kmeans/confusion_matrix_95VariancePCA.png)
+
+
+| Metrics      | Compliance Cluster | Default Cluster     |
+| :---:        |    :----:   |         :---:   |
+| Precision Score| 0.911  | 0.52  |
+| Recall Score |  0.76      | 0.77      |
+| F-measure | 0.83       | 0.62      |
+| Accurity Score | 0.76       | 0.76      |
 
 
 ### Supervised
