@@ -110,6 +110,9 @@ The role of unsupervised learning will be to understand the hidden data structur
 1) Clustering algorithms: visualize the data to allow better feature processing.
 2) Dimensionality reduction (PCA, tSNE and UMAP): Given a total of 190+ features, methods like tSNE and PCA can help visualize the data points and choose relevant features. Reduced feature count could also help boost training speed for supervised methods.
 
+#### KMeans
+The Kmeans algorithm separates train data into n clusters that minimizes the distance between the data points and the cluster centroids. Because our problem is a binary classification, we use Kmeans to divide our post-PCA processed data into two clusters and classify each cluster based on the majority of the votes of the k-nearest neighbors.
+
 
 ### Supervised
 This is primarily a Supervised Learning problem that requires binary classification. The models which have shown promise with previous work [1,3] are:
