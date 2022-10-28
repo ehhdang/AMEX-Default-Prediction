@@ -20,6 +20,38 @@ The training data contains a total of 190 features and contains 3 types of varia
 
 The training labels are binary: 1 means default while 0 means otherwise. There are a total of 458,913 labels, each of which corresponds to an unique customer ID. There is no NaN values in the labels.
 
+### Comparing Train and Test distributions
+
+#### Difference in Variance between Train and Test data
+(Columns with difference bigger than 0.5 threshold)
+
+|Column  |  train_data  | test_data|
+| :---:        |    :----:   |         :---:   |
+|B_10   | 4.892 |  11.797|
+|D_69   | 23.244  |40.610|
+|R_7    | 3.031 |  2.415|
+|B_26   | 2.915  | 6.453|
+|R_14   | 28.336 | 31.363|
+
+#### Difference in Skewness between Train and Test data
+(Columns with difference bigger than 30 threshold)
+
+
+| Column   | train_data |   test_data |
+| :---:        |    :----:   |         :---:   |
+| D_49    | 3.514       | 60.036 | 
+| B_6         | 93.541     |  48.117 | 
+| B_10      |   77.712     |  163.682 |
+| S_12       |  165.302      |    16.579 |
+| D_69       |  83.585     |  144.859 |
+| D_71       |  95.553     |  51.730 |
+| B_26       |  57.634     |  100.810 |
+| D_83       |  16.959     |  80.116 |
+| R_23      |   59.143      | 0.011 |
+| S_26       |  24.246     |  79.113 |
+| B_40       |  45.920      | 169.337 |
+
+
 ### Data Preprocessing
 1. Encode categorical features.
 
@@ -58,6 +90,18 @@ The next figure shows the relationship between the first seven PCA components. T
 
 *Figure 3: Training Data Projection on seven PCA Components with the Highest Variance.*
 
+### PCA and t-SNE results
+![2D Data Projection on PCA Components](images/pca/pca_projection_2D_amrit.png)
+*Figure 4: Training Data Projection on two PCA Components*
+
+![3D Data Projection on PCA Components](images/pca/pca_projection_3D_amrit.gif)
+*Figure 4: Training Data Projection on three PCA Components*
+
+![2D Data Projection on tSNE Components](images/tsne/tsne_projection_2D_amrit.png)
+*Figure 4: Training Data Projection on two tSNE Components.*
+
+![3D Data Projection on tSNE Components](images/tsne/tsne_projection_3D_amrit.gif)
+*Figure 4: Training Data Projection on three tSNE Components*
 
 
 ## Methods:
