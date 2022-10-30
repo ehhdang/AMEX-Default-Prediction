@@ -128,15 +128,43 @@ We do a more in-depth analysis of our Kmeans model by looking at several externa
 
 ### Supervised
 This is primarily a Supervised Learning problem that requires binary classification. Currently, due to the large size of the dataset, 10,000 customers were used with 80% used for training and 20% for validation. Gradient Boosted trees and Neural Networks have shown promise in this domain [1,3].
-####	Gradient Boosting (GB): Boosted trees (available through sklearn) have had a great performance in credit risk modeling. However, since trees cannot make use of temporal information, the features would need to be aggregated at customer level. The current approach used the sum of the feature values across time for each customer.
+####	Gradient Boosting (GB): 
+Boosted trees (available through sklearn) have had a great performance in credit risk modeling. However, since trees cannot make use of temporal information, the features would need to be aggregated at customer level. The current approach used the sum of the feature values across time for each customer.
 
-#### Neural Networks: A similar approach can be followed with Feed-forward networks. The temporal nature of the data makes it suitable for Long Short Term Memory (LSTM) networks, and the fixed number of periodicity might permit the use of transformers.
+After training an XGBoost classifier with 100 trees and max_depth of 3, we get the following metrics:
+
+| Metrics      | XG Boost Score     |
+| :---:        |    :---:   |
+| Precision Score| 0.80 |
+| Recall Score |  0.76  |
+| F-measure | 0.89   |
+| Accuracy Score | 0.78  |
+| AUC Score | 0.946 |
+| GINI Score (G) | 0.8915 |
+| Default rate at 4% (D) | 0.975|
+|M | 0.9332|
+
+
+The metrics G, D and M are defined by the competion and are highlighted in the [next section](https://github.com/ehhdang/AMEX-Default-Prediction#evaluation-metrics)
+
+The confusion matrix with this sample of 2000 customers in the validation set is shown below:
+
+![XGboost Confusion Matrix](images/supervised_learning/confusion_matrix.png)
+
+Below is a visual depiction of the AUC curve, which takes into account the false positive and false negative rates at various thresholds:
+![XGboost AUC curve](images/supervised_learning/roc_curve.png)
+
+This good performance on the validation set does prove a simpled un-tuned xgboost to be a difficult baseline to outperform for more advanced models:
+
+#### Neural Networks: 
+A similar approach can be followed with Feed-forward networks. The temporal nature of the data makes it suitable for Long Short Term Memory (LSTM) networks, and the fixed number of periodicity might permit the use of transformers.
 
 We not only hope to compare these approaches, but also ensemble them together to get our best performing model.
 
 ## Results & Discussion
 #### Evaluation Metrics
 We want to recreate the evaluation metric from the competition: https://www.kaggle.com/competitions/amex-default-prediction/overview/evaluation
+
 For this, first we introduce two terms:
 
 - Normalized Gini Coefficient (G). Here is was calculated from the AUC score using the formula
@@ -146,7 +174,7 @@ $$GINI = (2*AUC)-1 $$
 Using **G** and **D** our evaluaton metric **M** is found by:
 $$M = 0.5 \cdot(G+D) $$
 
-#### Discussuion
+#### Discussion
 In the Kaggle competition, the best-performing models achieve scores of 0.80 in this metric, and we hope to achieve accuracy close to that. There appears to be some inconsistency with regards to the training and test data provided by AMEX, as the test data is not merely a random sample of the training data. Instead the test data covers not only a separate set of customers, but also a different time period.
 
 Our initial results show the M score around 0.94 in the validation set, but scores around 0.70 in the competition using the same training. Therefore, validation accuracy is not a true reflection of test accuracy in this setting.
