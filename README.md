@@ -80,7 +80,7 @@ PCA identifies the combination of attributes, or principle components in the fea
 
 The figure below shows the scatter plot of the training dataset projected onto three PCA components that capture the most variance. The data corresponding to the compliance class is mapped to a turquoise color, while the data corresponding to the default class is mapped to a dark orange color. There is a large overlap between the compliance class and the default class, showing the challenge of the classification task.
 
-![3D Data Projection on PCA Components](images/pca/pca_projection_3D.png)
+![3D Data Projection on PCA Components](images/pca/pca_projection_3D.gif)
 
 *Figure 2: Training Data Projection on three PCA Components with the Highest Variance.*
 
