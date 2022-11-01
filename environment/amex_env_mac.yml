@@ -13,6 +13,4 @@ dependencies:
 - tqdm
 - pip
 - pyarrow
-- pip:
-  - azure-storage-blob
-  - python-dotenv
+- ffmpeg
