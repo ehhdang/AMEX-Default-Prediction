@@ -70,10 +70,11 @@ For each feature, we replace missing data with the mean of the complete data tha
 3. Normalize data.
 Next, we normalize the data so that it has the range between 0 and 1. 
 
-## Data Visualization    
-Data visualization is an important step in machine learning. With a good visualization, we can discover trends, patterns, insights into the data. In this section, we attempt to visualize the AMEX dataset. This is a challenging task because of the large number of features. To ease this task, we reduce the dimensionality of the data by using _Principle Component Analysis (PCA)_. 
+## Dimensionality Reduction    
+Data visualization is an important step in machine learning. With a good visualization, we can discover trends, patterns, insights into the data. In this section, we attempt to visualize the AMEX dataset. This is a challenging task because of the large number of features. To ease this task, we reduce the dimensionality of the data by using _Principle Component Analysis (PCA)_ and _t-distributed stochastic neighbor embedding (t-SNE)_. 
 
-PCA identifies the combination of attributes, or principle components in the feature space, that explains the most variance in the data. Here, we plot the cumulative variance explained by the principle components of the AMEX dataset. To capture 95% of the variance, we need at least 43 components. 
+### PCA
+PCA identifies the combination of attributes, or principle components in the feature space, that explains the most variance in the data. Here, we plot the cumulative variance explained by the principle components of the AMEX dataset. To capture 95% of the variance, we need at least 100 components. 
 
 ![Cumulative Variances](images/pca/cumulative_variance.png)
 *Figure 1: Cumulative variances of PCA components.*
@@ -90,25 +91,25 @@ The next figure shows the relationship between the first seven PCA components. T
 
 *Figure 3: Training Data Projection on seven PCA Components with the Highest Variance.*
 
-### PCA and t-SNE results
-![2D Data Projection on PCA Components](images/pca/pca_projection_2D_amrit.png)
-*Figure 4: Training Data Projection on two PCA Components*
-
-![3D Data Projection on PCA Components](images/pca/pca_projection_3D_amrit.gif)
-*Figure 4: Training Data Projection on three PCA Components*
+### t-SNE
 
 ![2D Data Projection on tSNE Components](images/tsne/tsne_projection_2D_amrit.png)
+
 *Figure 4: Training Data Projection on two tSNE Components.*
 
 ![3D Data Projection on tSNE Components](images/tsne/tsne_projection_3D_amrit.gif)
-*Figure 4: Training Data Projection on three tSNE Components*
+
+*Figure 5: Training Data Projection on three tSNE Components*
 
 
 ## Methods:
 ### Unsupervised
 The role of unsupervised learning will be to understand the hidden data structures for better feature processing. 
-1) Clustering algorithms: visualize the data to allow better feature processing.
-2) Dimensionality reduction (PCA, tSNE and UMAP): Given a total of 190+ features, methods like tSNE and PCA can help visualize the data points and choose relevant features. Reduced feature count could also help boost training speed for supervised methods.
+-  Clustering algorithms: visualize the data to allow better feature processing.
+-  Dimensionality reduction (PCA, tSNE and UMAP): Given a total of 190+ features, methods like tSNE and PCA can help visualize the data points and choose relevant features. Reduced feature count could also help boost training speed for supervised methods.
+
+#### KMEANS
+Kmeans algorithm separates data into n clusters that minimizes the distance between the data points and the cluster centroids. Because our problem is a binary classification, we use Kmeans to divide our post-PCA processed data into two clusters and classify each cluster based on the majority of the votes of the k-nearest neighbors. 
 
 
 ### Supervised
@@ -171,8 +172,6 @@ In the Kaggle competition, the best-performing models achieve scores of 0.80 in 
 Our initial results show the M score around 0.94 in the validation set, but scores around 0.70 in the competition using the same training. Therefore, validation accuracy is not a true reflection of test accuracy in this setting.
 
 #### KMEANS
-
-The Kmeans algorithm separates data into n clusters that minimizes the distance between the data points and the cluster centroids. Because our problem is a binary classification, we use Kmeans to divide our post-PCA processed data into two clusters and classify each cluster based on the majority of the votes of the k-nearest neighbors. 
 
 Our Kmeans model has a silhouette score of __0.23__, a Beta-CV value of __0.23__, and a Davies-Boulder index of __2.64__. The close-to-zero silhouette score indicates an overlap between the two clusters. The small Beta-CV score suggests that the data points within each cluster are close to one another compared to the distance between the cluster means. The PCA component visualization shows the non-linear separation between the two classes. Being a non-parametric clustering model, KMeans may lack the power to give a finer separation between compliance and default customers.
 
