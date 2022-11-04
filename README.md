@@ -141,8 +141,8 @@ After training an XGBoost classifier with 100 trees and max_depth of 3, we get t
 | Accuracy Score | 0.78  |
 | AUC Score | 0.946 |
 | GINI Score (G) | 0.8915 |
-| Default rate at 4% (D) | 0.975|
-|M | 0.9332|
+| Default rate at 4% (D) | 0.63|
+|M | 0.77|
 
 
 The metrics G, D and M are defined by the competion and are highlighted in the [next section](https://github.com/ehhdang/AMEX-Default-Prediction#evaluation-metrics)
@@ -152,9 +152,10 @@ The confusion matrix with this sample of 2000 customers in the validation set is
 ![XGboost Confusion Matrix](images/supervised_learning/confusion_matrix.png)
 
 Below is a visual depiction of the AUC curve, which takes into account the false positive and false negative rates at various thresholds:
+
 ![XGboost AUC curve](images/supervised_learning/roc_curve.png)
 
-This good performance on the validation set does prove a simpled un-tuned xgboost to be a difficult baseline to outperform for more advanced models:
+This good performance on the validation set shows us that a simpled untuned xgboost will be a difficult baseline to outperform for more advanced models:
 
 #### Neural Networks: 
 A similar approach can be followed with Feed-forward networks. The temporal nature of the data makes it suitable for Long Short Term Memory (LSTM) networks, and the fixed number of periodicity might permit the use of transformers.
@@ -175,9 +176,9 @@ Using **G** and **D** our evaluaton metric **M** is found by:
 $$M = 0.5 \cdot(G+D) $$
 
 #### Discussion
-In the Kaggle competition, the best-performing models achieve scores of 0.80 in this metric, and we hope to achieve accuracy close to that. There appears to be some inconsistency with regards to the training and test data provided by AMEX, as the test data is not merely a random sample of the training data. Instead the test data covers not only a separate set of customers, but also a different time period.
+In the Kaggle competition, the best-performing models achieve scores of 0.80 in this metric, and we hope to achieve accuracy close to that. However, we will face some difficulties because the test data is not merely a random sample of the training data. The test data covers not only a separate set of customers, but also a different time period.
 
-Our initial results show the M score around 0.94 in the validation set, but scores around 0.70 in the competition using the same training. Therefore, validation accuracy is not a true reflection of test accuracy in this setting.
+Our initial results show the M score around 0.77 in the validation set and we hope this score will be reflected in the test set as well. 
 
 ## References
 1. [Machine Learning: Challenges, Lessons, and Opportunities in Credit Risk Modelling](https://www.moodysanalytics.com/risk-perspectives-magazine/managing-disruption/spotlight/machine-learning-challenges-lessons-and-opportunities-in-credit-risk-modeling) 
