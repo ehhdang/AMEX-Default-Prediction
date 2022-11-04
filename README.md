@@ -110,21 +110,6 @@ The role of unsupervised learning will be to understand the hidden data structur
 1) Clustering algorithms: visualize the data to allow better feature processing.
 2) Dimensionality reduction (PCA, tSNE and UMAP): Given a total of 190+ features, methods like tSNE and PCA can help visualize the data points and choose relevant features. Reduced feature count could also help boost training speed for supervised methods.
 
-#### KMeans
-The Kmeans algorithm separates data into n clusters that minimizes the distance between the data points and the cluster centroids. Because our problem is a binary classification, we use Kmeans to divide our post-PCA processed data into two clusters and classify each cluster based on the majority of the votes of the k-nearest neighbors. Our Kmeans model has a silhouette score of __0.188__, which indicates a large overlap of the two clusters. Being a non-parametric clustering algorithm, Kmeans is not powerful enough to handle the non-linear separation of our data classes. 
-
-We do a more in-depth analysis of our Kmeans model by looking at several external metrics. The accuracy of the model is 76.52% on testing data. This low accuracy comes from the model's inability to precisely predict default customers. In the confusion matrix figure below, the default cluster has roughly the same number of default data points as compliant data point. As a result, the default cluster has a low precision score of 0.52. On the other hand, the compliance cluster has a good precision score of 0.91. The Kmeans model predicts default class poorly and thus should not be a predictive model of our problem, despite giving a good prediction of the compliance class. The table below summarizes other externals metrics on this Kmeans model. 
-
-![Kmeans Confusion Matrix](images/kmeans/confusion_matrix_95VariancePCA.png)
-
-
-| Metrics      | Compliance Cluster | Default Cluster     |
-| :---:        |    :----:   |         :---:   |
-| Precision Score| 0.911  | 0.52  |
-| Recall Score |  0.76      | 0.77      |
-| F-measure | 0.83       | 0.62      |
-| Accurity Score | 0.76       | 0.76      |
-
 
 ### Supervised
 This is primarily a Supervised Learning problem that requires binary classification. Currently, due to the large size of the dataset, 10,000 customers were used with 80% used for training and 20% for validation. Gradient Boosted trees and Neural Networks have shown promise in this domain [1,3].
@@ -162,10 +147,16 @@ A similar approach can be followed with Feed-forward networks. The temporal natu
 We not only hope to compare these approaches, but also ensemble them together to get our best performing model.
 
 ## Results & Discussion
-#### Evaluation Metrics
+### Evaluation Metrics
 We want to recreate the evaluation metric from the competition: https://www.kaggle.com/competitions/amex-default-prediction/overview/evaluation
 
-For this, first we introduce two terms:
+For the unsupervised methods, we will use both internal metrics (e.g. Beta-CV, Davies-Bouldin, and Silhouette score) and external metrics (e.g. purity, precision, recall, accuracy) to evaluate our clustering models. 
+
+A good clustering result minimizes the distance between intra-cluster data points while maximizing the distance between inter-cluster data points. Beta-CV is a graph-based metrics that computes the ratio of the mean intra-cluster distance to the mean inter-cluster distance. The smaller the Beta-CV score is, the bettter the cluster result is. Silhouette coefficient measures the relative distance from the closest outer cluster to the average intra-cluster distance. A silhouette coefficient close to 1 implies a good cluster because the intra-cluster points are close to one another but far away from other clusters. A coefficient close to -1 indicates that a sample has been assigned to a wrong cluster as a closer cluster is found. A coefficient around 0 indicates overlapping between clusters. Davies-Bouldin index measures how compact the clusters are compared to the distance between the cluster means. A lower Davies_Bouldin index means a better clustering result.
+
+Because we have access to the ground truths of our training data, we compute some external measures to further evaluate the performance of our clustering models. Purity quantifies the extent to which a cluster contains points from only one ground truth partition. A purity value close to 1 indicates a perfect clustering. In this project, we use maximum matching to avoid matching two clusters to the same partition or class. Purity is also known as precision, which measures the quality of our clusters, such as how precisely each cluster represents the ground truth. Another metrics is recall score, which computes how completely each cluster recovers the ground truths. We also report the F-measure, which is the harmonic mean of precision and recall. F-measure captures both the completeness and the precision of the clustering.
+
+For the supervised methods, we introduce two terms:
 
 - Normalized Gini Coefficient (G). Here is was calculated from the AUC score using the formula
 $$GINI = (2*AUC)-1 $$
@@ -174,10 +165,28 @@ $$GINI = (2*AUC)-1 $$
 Using **G** and **D** our evaluaton metric **M** is found by:
 $$M = 0.5 \cdot(G+D) $$
 
-#### Discussion
+### Discussion
 In the Kaggle competition, the best-performing models achieve scores of 0.80 in this metric, and we hope to achieve accuracy close to that. There appears to be some inconsistency with regards to the training and test data provided by AMEX, as the test data is not merely a random sample of the training data. Instead the test data covers not only a separate set of customers, but also a different time period.
 
 Our initial results show the M score around 0.94 in the validation set, but scores around 0.70 in the competition using the same training. Therefore, validation accuracy is not a true reflection of test accuracy in this setting.
+
+#### KMEANS
+
+The Kmeans algorithm separates data into n clusters that minimizes the distance between the data points and the cluster centroids. Because our problem is a binary classification, we use Kmeans to divide our post-PCA processed data into two clusters and classify each cluster based on the majority of the votes of the k-nearest neighbors. 
+
+Our Kmeans model has a silhouette score of __0.23__, a Beta-CV value of __0.23__, and a Davies-Boulder index of __2.64__. The close-to-zero silhouette score indicates an overlap between the two clusters. The small Beta-CV score suggests that the data points within each cluster are close to one another compared to the distance between the cluster means. The PCA component visualization shows the non-linear separation between the two classes. Being a non-parametric clustering model, KMeans may lack the power to give a finer separation between compliance and default customers.
+
+![Kmeans Confusion Matrix](images/kmeans/confusion_matrix_pca.png)
+
+We do a more in-depth analysis of our Kmeans model by looking at several external metrics. The accuracy of the model is 85% on testing data. Nevertheless, the precision score differs greatly between two clusters. Our KMeans model is more precise in predicting compliance data point than predicting default data points. In the confusion matrix figure above, the default cluster has roughly a similar number of default data points as compliance data points. As a result, the default cluster has a low precision score of 0.69. On the other hand, the compliance cluster has a good precision score of 0.92. The Kmeans model predicts default class poorly, despite giving a good prediction of the compliance class. The table below summarizes other externals metrics on this Kmeans model. 
+
+| External Metrics      | Compliance Cluster | Default Cluster     |
+| :---:        |    :----:   |         :---:   |
+| Precision Score| 0.92  | 0.69  |
+| Recall Score |  0.88      | 0.77      |
+| F-measure | 0.89       | 0.85      |
+| Accurity Score | 0.85       | 0.85     |
+
 
 ## References
 1. [Machine Learning: Challenges, Lessons, and Opportunities in Credit Risk Modelling](https://www.moodysanalytics.com/risk-perspectives-magazine/managing-disruption/spotlight/machine-learning-challenges-lessons-and-opportunities-in-credit-risk-modeling) 
