@@ -148,7 +148,7 @@ A similar approach can be followed with Feed-forward networks. The temporal natu
 
 We not only hope to compare these approaches, but also ensemble them together to get our best performing model.
 
-## Results & Discussion
+## Results and Discussion
 ### Evaluation Metrics
 We want to recreate the evaluation metric from the competition: https://www.kaggle.com/competitions/amex-default-prediction/overview/evaluation
 
@@ -167,13 +167,9 @@ $$GINI = (2*AUC)-1 $$
 Using **G** and **D** our evaluaton metric **M** is found by:
 $$M = 0.5 \cdot(G+D) $$
 
-### Discussion
-In the Kaggle competition, the best-performing models achieve scores of 0.80 in this metric, and we hope to achieve accuracy close to that. However, we will face some difficulties because the test data is not merely a random sample of the training data. The test data covers not only a separate set of customers, but also a different time period.
-
-Our initial results show the M score around 0.94 in the validation set, but scores around 0.70 in the competition using the same training. Therefore, validation accuracy is not a true reflection of test accuracy in this setting.
+### Unsupervised Learning
 
 #### KMEANS
-
 Our Kmeans model has a silhouette score of __0.23__, a Beta-CV value of __0.23__, and a Davies-Boulder index of __2.64__. The close-to-zero silhouette score indicates an overlap between the two clusters. The small Beta-CV score suggests that the data points within each cluster are close to one another compared to the distance between the cluster means. The PCA component visualization shows the non-linear separation between the two classes. Being a non-parametric clustering model, KMeans may lack the power to give a finer separation between compliance and default customers.
 
 ![Kmeans Confusion Matrix](images/kmeans/confusion_matrix_pca.png)
@@ -186,6 +182,11 @@ We do a more in-depth analysis of our Kmeans model by looking at several externa
 | Recall Score |  0.88      | 0.77      |
 | F-measure | 0.89       | 0.85      |
 | Accurity Score | 0.85       | 0.85     |
+
+### Supervised Learning
+In the Kaggle competition, the best-performing models achieve scores of 0.80 in this metric, and we hope to achieve accuracy close to that. However, we will face some difficulties because the test data is not merely a random sample of the training data. The test data covers not only a separate set of customers, but also a different time period.
+
+Our initial results show the M score around 0.94 in the validation set, but scores around 0.70 in the competition using the same training. Therefore, validation accuracy is not a true reflection of test accuracy in this setting.
 
 
 ## References
