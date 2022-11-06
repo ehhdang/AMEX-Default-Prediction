@@ -46,9 +46,9 @@ def get_data(sample = False):
         df = pd.read_parquet(paths['total_data'])  #shape 5531451 rows × 190 columns
     return df
 
-def get_train_test_split(method = 'method_2'):
+def get_train_test_split(method = 'method_2', sample = False):
 
-    df = get_data(sample = False)
+    df = get_data(sample = sample)
     
     #df = pd.read_parquet('./train_groupwise_mean_total.parquet')
     customer_id_list = df['customer_ID'].unique().tolist()
@@ -77,8 +77,8 @@ def get_aggregated_data(df , group_by_col='customer_ID' , method = 'mean'):
     return df_aggregated
 
 
-def get_aggregated_train_test_split():
-    train_df , test_df = get_train_test_split(method = 'method_2')
+def get_aggregated_train_test_split(sample = False):
+    train_df , test_df = get_train_test_split(method = 'method_2', sample = sample)
 
     train_df_mean = get_aggregated_data(train_df)
     #train_aggregated_mean.to_parquet("train_groupwise_mean_train_agg_mean.parquet")
@@ -98,9 +98,9 @@ def get_aggregated_train_test_split():
 
     return train_df_mean ,test_df_mean
 
+
 def get_long_train_labels(labels, train_data):
     """Create a 2D scatterplot of components and labels
-
     Args:
         labels (pd.DataFrame): (N,D) A dataframe containing the customer_ids, with one entry for each customer
         train_data (pd.DataFrame): (N*12, D) A dataframe containing the customer_ids
