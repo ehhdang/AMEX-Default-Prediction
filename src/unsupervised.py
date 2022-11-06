@@ -2,14 +2,19 @@ from sklearn.decomposition import PCA
 from matplotlib import pyplot as plt
 import numpy as np
 
-def pca_transformer(numerical_data, numerical_test_data= None, threshold = 0.95):
-    pca = PCA(n_components=0.95)
+from sklearn.cluster import KMeans
+from sklearn.metrics import ConfusionMatrixDisplay, confusion_matrix, silhouette_score
+from sklearn.metrics import DistanceMetric
+
+
+def pca_transformer(numerical_data, numerical_test_data= [], threshold = 0.95):
+    pca = PCA(n_components=threshold)
     pca_train_components = pca.fit(numerical_data).transform(numerical_data)
-    if numerical_test_data:
+    if len(numerical_test_data)>0:
         pca_test_components = pca.transform(numerical_test_data)
-        return pca_train_components, pca_test_components
+        return pca, pca_train_components, pca_test_components
     else:
-        return pca_train_components
+        return pca, pca_train_components
 
 
 def visualize_pca_cum_variance(pca):
@@ -24,7 +29,7 @@ def visualize_pca_cum_variance(pca):
     plt.rcParams["figure.figsize"] = (12,6)
 
     fig, ax = plt.subplots()
-    xi = np.arange(1, 44, step=1)
+    xi = np.arange(0, pca.n_components, step=1)
     y = np.cumsum(pca.explained_variance_ratio_*100)
 
     plt.ylim(0.0, 100.1)
@@ -56,6 +61,7 @@ def visualize_pca_3D(pca_train_components, train_labels):
     Returns:
         None
     """
+    # TODO: train labels is not the same size as the number of training examples, so the boolean won't work in this new implementation
     plt.rcParams["figure.figsize"] = (12,6)
     target_names = ["compliance", "default"]
     fig = plt.figure()
@@ -63,7 +69,6 @@ def visualize_pca_3D(pca_train_components, train_labels):
     colors = ["turquoise", "darkorange"]
 
     for color, i, target_name in zip(colors, [0, 1], target_names):
-
         ax.scatter(
             pca_train_components[train_labels["target"]==i, 0], pca_train_components[train_labels["target"]==i, 1], pca_train_components[train_labels["target"]==i, 2], 
             s=9, linewidths=0.0, alpha=0.5 ,color=color, label=target_name
@@ -93,6 +98,8 @@ def visualize_pca_2D(pca_train_components, train_labels):
     Returns:
         None
     """
+
+    # TODO: train labels is not the same size as the number of training examples, so the boolean won't work in this new implementation
     target_names = ["compliance", "default"]
     fig = plt.figure()
     colors = ["turquoise", "darkorange"]
