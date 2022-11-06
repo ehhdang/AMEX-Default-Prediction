@@ -99,7 +99,6 @@ def get_aggregated_train_test_split():
     return train_df_mean ,test_df_mean
 
 
-
 def get_long_train_labels(labels, train_data):
     """Create a 2D scatterplot of components and labels
     Args:
