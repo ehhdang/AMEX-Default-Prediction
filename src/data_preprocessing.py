@@ -2,6 +2,8 @@ import pandas as pd
 import pyarrow
 from time import time
 from sklearn.model_selection import train_test_split
+from sklearn.impute import SimpleImputer
+from sklearn.preprocessing import StandardScaler, MinMaxScaler 
 
 from .constants import paths
 
@@ -47,6 +49,9 @@ def get_data(sample = False):
     return df
 
 def get_train_test_split(method = 'method_2', sample = False):
+    '''
+    Does 80:20 split based on unique Customer IDs
+    '''
 
     df = get_data(sample = sample)
     
@@ -97,6 +102,39 @@ def get_aggregated_train_test_split(sample = False):
     test_df_mean = pd.merge(test_df_mean , labels , on = 'customer_ID' , how = 'left')
 
     return train_df_mean ,test_df_mean
+
+
+def preprocessing(train_df_mean , test_df_mean):
+    '''
+    Imputes all the missing values with global mean of that columns
+    '''
+    x_train = train_df_mean.drop(columns = ['customer_ID' , 'target'])
+    y_train = train_df_mean['target']
+    imp = SimpleImputer(strategy="mean")
+    x_train = pd.DataFrame(imp.fit_transform(x_train) , columns = x_train.columns)
+
+    # Test data
+    x_test = test_df_mean.drop(columns = ['customer_ID' , 'target'])
+    y_test = test_df_mean['target']
+    imp = SimpleImputer(strategy="mean")
+    x_test = pd.DataFrame(imp.fit_transform(x_test) , columns = x_test.columns)
+
+    #x_train.shape , x_test.shape
+    return x_train , x_test , y_train , y_test
+
+
+def custom_processing(x_train , x_test , y_train , y_test):
+    '''
+    Add your own preprocessing here.
+    '''
+    # Scalind training data
+    ss = StandardScaler()
+    #mm = MinMaxScaler()
+    x_train_processed =  ss.fit_transform(x_train)
+    x_test_processed = ss.transform(x_test)
+    y_train_processed =  y_train
+    y_test_processed = y_test
+    return x_train_processed , x_test_processed, y_train_processed , y_test_processed
 
 
 def get_long_train_labels(labels, train_data):
