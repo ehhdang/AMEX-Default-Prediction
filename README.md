@@ -16,9 +16,9 @@ We obtain the data set from the [AMEX Default Prediction](https://www.kaggle.com
 - B_*: Balance features
 - R_*: Risk features
 
-The training data contains a total of 190 features and contains 3 types of variables: `float` (185 features), `int` (1 feature), `string` (4 features). There are 5,531,450 data points. An initial observation reveals that __*120/190*__ features contain NaN values. Approximately 75% of the features have less than 10% NaN values. Some features like D_87 and B_39 are heavy in NaN values, with more than 90% of the data points being NaN. An initial reaction would be to discard features like D_87 which has 99.93% NaN values; however, 0.07% of the data points is roughly 4,000 data points. Without any doubt, we need to perform some data preprocessing to predict the values of these NaN values.
+The training data contains a total of 190 features and contains 3 types of variables: `float` (185 features), `int` (1 feature), `string` (4 features). There are 5,531,450 data points. An initial observation reveals that __*120/190*__ features contain NaN values. Approximately 75% of the features have less than 10% NaN values. Some features like D_87 and B_39 are heavy in NaN values, with more than 90% of the data points being NaN. An initial reaction would be to discard features like D_87 which has 99.93% NaN values; however, 0.07% of the data points is roughly 4,000 data points. We need to perform some data preprocessing to predict the values of these NaN values.
 
-The training labels are binary: 1 means default while 0 means otherwise. There are a total of 458,913 labels, each of which corresponds to an unique customer ID. There is no NaN values in the labels.
+The training labels are binary: 1 means __Default__ while 0 means __Compliance__. There are a total of 458,913 labels, each of which corresponds to an unique customer ID. There is no NaN values in the labels.
 
 ### Comparing Train and Test distributions
 
@@ -53,25 +53,29 @@ The training labels are binary: 1 means default while 0 means otherwise. There a
 
 
 ### Data Preprocessing
-1. Encode categorical features.
+1. Encode categorical features.  
+We use an ordinal encoder to encode categorical features because deliquency variables tend to follow a logical ordering. The following table summarizes information about categorical features
 
-| Feature      | Description | Value Range     |
-| :---:        |    :----:   |         :---:   |
-| `customer_ID`| customer ID  | 458,913 unique ID  |
-| `S_2` | Statement date       | Various datetime values      |
-| `D_63` | Deliquency variable       | `['CR', 'CO', 'CL', 'XZ', 'XM', 'XL']`      |
-| `D_64` | Deliquency variable       | `['O', 'R', nan, 'U', '-1']`      |
+| Feature      | Description | Value Range     | Encoder
+| :---:        |    :----:   |         :---:   | :---:
+| `customer_ID`| customer ID  | 458,913 unique ID  | NA<sup>[*](#myfootnote1)</sup>
+| `S_2` | Statement date  | Various datetime values   | ΝΑ<sup>[*](#myfootnote1)</sup>
+| `D_63` | Deliquency variable  | `['CR', 'CO', 'CL', 'XZ', 'XM', 'XL']` | Οrdinal 
+| `D_64` | Deliquency variable  | `['O', 'R', nan, 'U', '-1']` | Ordinal
 
-We use an ordinal encoder to encode `D_63` and `D_64` features because deliquency variables tend to follow a logical ordering.
+<a name="myfootnote1">*</a> This feature is not encoded because their data are not used in training models.
 
 2. Predict missing values.  
-For each feature, we replace missing data with the mean of the complete data that has a matching label.
+Each customer ID has several data points. Each missing value is replaced with the mean of the __feature__ data grouped by customer ID.
 
-3. Normalize data.
-Next, we normalize the data so that it has the range between 0 and 1. 
+3. Customized preprocessing steps.  
+Different types of learning required specialized preprocessing pipeline. For each training model, we will build a custom preprocessing pipeline optimized for that model.
+- KMeans: we first normalize the data along each feature, then use the _Principle Component Analysis (PCA)_ to compress the feature space while preserving 95% of the variance in the data. 
+> __*TO DO*__: fill in the preprocessing for the GMM method   
+> __*TO DO*__: fill in the preprocessing for the gradient boosting method.
 
-## Dimensionality Reduction    
-Data visualization is an important step in machine learning. With a good visualization, we can discover trends, patterns, insights into the data. In this section, we attempt to visualize the AMEX dataset. This is a challenging task because of the large number of features. To ease this task, we reduce the dimensionality of the data by using _Principle Component Analysis (PCA)_ and _t-distributed stochastic neighbor embedding (t-SNE)_. 
+## Data Visualization    
+Data visualization is an important step in machine learning. With a good visualization, we can discover trends and patterns in the data. In this section, we attempt to visualize the AMEX dataset. We first reduce the feature space of our data by using _Principle Component Analysis (PCA)_ and _t-distributed stochastic neighbor embedding (t-SNE)_. Then we show the graph of the data set projected on several components that preserve the most amount of variance. We hope to obtain some insights about the AMEX dataset and use the knowledge to guide our model selection and training.
 
 ### PCA
 PCA identifies the combination of attributes, or principle components in the feature space, that explains the most variance in the data. Here, we plot the cumulative variance explained by the principle components of the AMEX dataset. To capture 95% of the variance, we need at least 100 components. 
@@ -79,13 +83,13 @@ PCA identifies the combination of attributes, or principle components in the fea
 ![Cumulative Variances](images/pca/cumulative_variance.png)
 *Figure 1: Cumulative variances of PCA components.*
 
-The figure below shows the scatter plot of the training dataset projected onto three PCA components that capture the most variance. The data corresponding to the compliance class is mapped to a turquoise color, while the data corresponding to the default class is mapped to a dark orange color. There is a large overlap between the compliance class and the default class, showing the challenge of the classification task.
+The figure below shows the scatter plot of the training dataset projected onto three PCA components that capture the most variance. The turquoise marker represents the data points that belong to the compliance class. The dark orange marker represents the data points that belong to the default class. The below 3D animation plot shows a large overlap between the compliance class and the default class, demonstrating the challenge of the classification task.
 
 ![3D Data Projection on PCA Components](images/pca/pca_projection_3D.gif)
 
 *Figure 2: Training Data Projection on three PCA Components with the Highest Variance.*
 
-The next figure shows the relationship between the first seven PCA components. The turquoise color represents the compliance-class data, and the dark orange color represents the default-class data. According to the figure, no combination of two features offers a good separation of the two classes. The large amount of overlap suggests that the regression model to separate the two class will be highly nonlinear.
+The next figure shows the data projected onto every pair of the first seven PCA components. Similar to the previous graph, the turquoise color represents the compliance-class data, while the dark orange color represents the default-class data. In the figure, no combination of two features offers a perfect separation of the two classes. In the pair of PCA components that give the best separation, such as (PCA 1, PCA 5), the two class data still shows a considerate amount of overlap. In addition, the separation is non-linear, suggesting that a parametric model such as GMM and supervised learning methods are the most suitable to learn the data. 
 
 ![2D Data Projection on PCA Components](images/pca/pca_projection_2D.png)
 
@@ -101,6 +105,8 @@ The next figure shows the relationship between the first seven PCA components. T
 
 *Figure 5: Training Data Projection on three tSNE Components*
 
+> __*TO DO:*__: some analysis of the tSNE results?
+
 
 ## Methods:
 ### Unsupervised
@@ -109,12 +115,15 @@ The role of unsupervised learning will be to understand the hidden data structur
 -  Dimensionality reduction (PCA, tSNE and UMAP): Given a total of 190+ features, methods like tSNE and PCA can help visualize the data points and choose relevant features. Reduced feature count could also help boost training speed for supervised methods.
 
 #### KMEANS
-Kmeans algorithm separates data into n clusters that minimizes the distance between the data points and the cluster centroids. Because our problem is a binary classification, we use Kmeans to divide our post-PCA processed data into two clusters and classify each cluster based on the majority of the votes of the k-nearest neighbors. 
+Kmeans algorithm separates data into n clusters that minimizes the distance between the data points and the cluster centroids. Because our problem is a binary classification, we use Kmeans to divide the data into two clusters and classify each cluster based on the majority of the votes of the k-nearest neighbors. 
+
+The preprocessing pipeline for KMEANs consists of 1) the general preprocessing where the missing values are populated with the mean of each feature grouped by customer ID, 2) data normalization along the features, 3) dimensionality reduction with PCA that captures 95% of the variance in the data.
 
 
 ### Supervised
 This is primarily a Supervised Learning problem that requires binary classification. Currently, due to the large size of the dataset, 10,000 customers were used with 80% used for training and 20% for validation. Gradient Boosted trees and Neural Networks have shown promise in this domain [1,3].
 ####	Gradient Boosting (GB): 
+>__*TO DO*__: Put the gradient boosting analysis in the result and discussion section.  
 Boosted trees (available through sklearn) have had a great performance in credit risk modeling. However, since trees cannot make use of temporal information, the features would need to be aggregated at customer level. The current approach used the sum of the feature values across time for each customer.
 
 After training an XGBoost classifier with 100 trees and max_depth of 3, we get the following metrics:
@@ -152,18 +161,16 @@ We not only hope to compare these approaches, but also ensemble them together to
 ### Evaluation Metrics
 We want to recreate the evaluation metric from the competition: https://www.kaggle.com/competitions/amex-default-prediction/overview/evaluation
 
-For the unsupervised methods, we will use both internal metrics (e.g. Beta-CV, Davies-Bouldin, and Silhouette score) and external metrics (e.g. purity, precision, recall, accuracy) to evaluate our clustering models. 
+1. Unsupervised methods:  
+We use both internal metrics (e.g. Beta-CV, Davies-Bouldin, and Silhouette score) and external metrics (e.g. purity, precision, recall, accuracy) to evaluate our clustering models.  
+- A good clustering result minimizes the distance between intra-cluster data points while maximizing the distance between inter-cluster data points. Beta-CV is a graph-based metrics that computes the ratio of the mean intra-cluster distance to the mean inter-cluster distance. The smaller the Beta-CV score is, the bettter the cluster result is. Silhouette coefficient measures the relative distance from the closest outer cluster to the average intra-cluster distance. A silhouette coefficient close to 1 implies a good cluster because the intra-cluster points are close to one another but far away from other clusters. A coefficient close to -1 indicates that a sample has been assigned to a wrong cluster as a closer cluster is found. A coefficient around 0 indicates overlapping between clusters. Davies-Bouldin index measures how compact the clusters are compared to the distance between the cluster means. A lower Davies_Bouldin index means a better clustering result.  
+- Because we have access to the ground truths of our training data, we compute some external measures to further evaluate the performance of our clustering models. Purity quantifies the extent to which a cluster contains points from only one ground truth partition. A purity value close to 1 indicates a perfect clustering. In this project, we use maximum matching to avoid matching two clusters to the same partition or class. Purity is also known as precision, which measures the quality of our clusters, such as how precisely each cluster represents the ground truth. Another metrics is recall score, which computes how completely each cluster recovers the ground truths. We also report the F-measure, which is the harmonic mean of precision and recall. F-measure captures both the completeness and the precision of the clustering.
 
-A good clustering result minimizes the distance between intra-cluster data points while maximizing the distance between inter-cluster data points. Beta-CV is a graph-based metrics that computes the ratio of the mean intra-cluster distance to the mean inter-cluster distance. The smaller the Beta-CV score is, the bettter the cluster result is. Silhouette coefficient measures the relative distance from the closest outer cluster to the average intra-cluster distance. A silhouette coefficient close to 1 implies a good cluster because the intra-cluster points are close to one another but far away from other clusters. A coefficient close to -1 indicates that a sample has been assigned to a wrong cluster as a closer cluster is found. A coefficient around 0 indicates overlapping between clusters. Davies-Bouldin index measures how compact the clusters are compared to the distance between the cluster means. A lower Davies_Bouldin index means a better clustering result.
-
-Because we have access to the ground truths of our training data, we compute some external measures to further evaluate the performance of our clustering models. Purity quantifies the extent to which a cluster contains points from only one ground truth partition. A purity value close to 1 indicates a perfect clustering. In this project, we use maximum matching to avoid matching two clusters to the same partition or class. Purity is also known as precision, which measures the quality of our clusters, such as how precisely each cluster represents the ground truth. Another metrics is recall score, which computes how completely each cluster recovers the ground truths. We also report the F-measure, which is the harmonic mean of precision and recall. F-measure captures both the completeness and the precision of the clustering.
-
-For the supervised methods, we introduce two terms:
-
+2. Unsupervised Methods:  
+We introduce two terms to help us evaluate our supervised models:  
 - Normalized Gini Coefficient (G). Here is was calculated from the AUC score using the formula
 $$GINI = (2*AUC)-1 $$
-- Default rate at 4% (D). This captures a Sensitivity/Recall statistic by calculating the portion of defaults in the highest-ranked 4% of predictions.
-  
+- Default rate at 4% (D). This captures a Sensitivity/Recall statistic by calculating the portion of defaults in the highest-ranked 4% of predictions.  
 Using **G** and **D** our evaluaton metric **M** is found by:
 $$M = 0.5 \cdot(G+D) $$
 
@@ -199,8 +206,8 @@ Our initial results show the M score around 0.94 in the validation set, but scor
 ## Proposed Timeline
 The project's timeline and task breakdown are detailed in this [Gantt chart](https://docs.google.com/spreadsheets/d/1NwSPawBI_k9x3xHloXmnbROMbCaqwuFalB0XVgNrCJ8/edit?usp=sharing).
 
-## Contribution Table for Project Proposal
- - Hassan Naveed: Methods, Result, and Discussion for the supervised portion.
- - Aditi Prakash: Introduction, Background, and Problem Definition.
- - Emma Dang: GitHub Pages, Proposed Timeline, and Contribution Table.
- - Amritpal Singh: Method, Result, and Discussion for the unsupervised portion.
+## Contribution Table for the Midterm Report
+ - Hassan Naveed: Method, Result and Discussion for the Gradient Boosting model.
+ - Aditi Prakash: Method, Result and Discussion for the GMM model.
+ - Emma Dang: Data Preprocessing, Method, Result, and Discussion for KMEANS model.
+ - Amritpal Singh: Data Cleaning and Preprocessing, PCA and tSNE models.
