@@ -122,35 +122,8 @@ The preprocessing pipeline for KMEANs consists of 1) the general preprocessing w
 
 ### Supervised
 This is primarily a Supervised Learning problem that requires binary classification. Currently, due to the large size of the dataset, 10,000 customers were used with 80% used for training and 20% for validation. Gradient Boosted trees and Neural Networks have shown promise in this domain [1,3].
-####	Gradient Boosting (GB): 
->__*TO DO*__: Put the gradient boosting analysis in the result and discussion section.  
-Boosted trees (available through sklearn) have had a great performance in credit risk modeling. However, since trees cannot make use of temporal information, the features would need to be aggregated at customer level. The current approach used the sum of the feature values across time for each customer.
-
-After training an XGBoost classifier with 100 trees and max_depth of 3, we get the following metrics:
-
-| Metrics      | XG Boost Score     |
-| :---:        |    :---:   |
-| Precision Score| 0.80 |
-| Recall Score |  0.76  |
-| F-measure | 0.89   |
-| Accuracy Score | 0.78  |
-| AUC Score | 0.946 |
-| GINI Score (G) | 0.8915 |
-| Default rate at 4% (D) | 0.63|
-|M | 0.77|
-
-
-The metrics G, D and M are defined by the competion and are highlighted in the [next section](https://github.com/ehhdang/AMEX-Default-Prediction#evaluation-metrics)
-
-The confusion matrix with this sample of 2000 customers in the validation set is shown below:
-
-![XGboost Confusion Matrix](images/supervised_learning/confusion_matrix.png)
-
-Below is a visual depiction of the AUC curve, which takes into account the false positive and false negative rates at various thresholds:
-
-![XGboost AUC curve](images/supervised_learning/roc_curve.png)
-
-This good performance on the validation set shows us that a simpled untuned xgboost will be a difficult baseline to outperform for more advanced models:
+####	Gradient Boosting (GB):  
+Boosted trees (available through sklearn) have had a great performance in credit risk modeling. However, since trees cannot make use of temporal information, the features would need to be aggregated at customer level. The current approach used the both the mean and medians of the feature values across time for each customer. So if `D_64` was a feature in the dataset, now we have the mean of D_4 for that customer as well as the median. We hope to try other aggregations of the features as well such as min, max or just the last value. Any missing values after this aggregation (when all entries for that customer and feature combination were missing) were replaced with zeros. We also tried replacing missing values with the mean, but the result was not that different. The results are shown in the [next section](https://github.com/ehhdang/AMEX-Default-Prediction#supervised-learning).
 
 #### Neural Networks: 
 A similar approach can be followed with Feed-forward networks. The temporal nature of the data makes it suitable for Long Short Term Memory (LSTM) networks, and the fixed number of periodicity might permit the use of transformers.
@@ -191,10 +164,35 @@ We do a more in-depth analysis of our Kmeans model by looking at several externa
 | Accurity Score | 0.85       | 0.85     |
 
 ### Supervised Learning
+After training an XGBoost classifier with 100 trees and max_depth of 3, we get the following metrics:
+
+| Metrics      | XG Boost Score     |
+| :---:        |    :---:   |
+| Precision Score| 0.69 |
+| Recall Score |  0.86  |
+| F-measure | 0.89   |
+| Accuracy Score | 0.86  |
+| AUC Score | 0.9419 |
+| GINI Score (G) | 0.8838 |
+| Default rate at 4% (D) | 0.53|
+|M | 0.71|
+
+
+The metrics G, D and M are defined by the competion and are highlighted in the [previous section](https://github.com/ehhdang/AMEX-Default-Prediction#evaluation-metrics)
+
+The confusion matrix with this sample in the validation set is shown below:
+
+![XGboost Confusion Matrix](images/supervised_learning/confusion_matrix.jpg)
+
+Below is a visual depiction of the AUC curve, which takes into account the false positive and false negative rates at various thresholds:
+
+![XGboost AUC curve](images/supervised_learning/roc_curve.png)
+
+The red line demoonstrates the default rate at 4%, which is a required metric for this data. Here it could use some improvement. Even then, a simpled untuned xgboost will be a difficult baseline to outperform for more advanced models:
+
 In the Kaggle competition, the best-performing models achieve scores of 0.80 in this metric, and we hope to achieve accuracy close to that. However, we will face some difficulties because the test data is not merely a random sample of the training data. The test data covers not only a separate set of customers, but also a different time period.
 
-Our initial results show the M score around 0.94 in the validation set, but scores around 0.70 in the competition using the same training. Therefore, validation accuracy is not a true reflection of test accuracy in this setting.
-
+Our initial results show the M score around 0.71 in the validation set and we hope this score will be reflected in the test set as well. This will need to be improved to reach state of the art performance.
 
 ## References
 1. [Machine Learning: Challenges, Lessons, and Opportunities in Credit Risk Modelling](https://www.moodysanalytics.com/risk-perspectives-magazine/managing-disruption/spotlight/machine-learning-challenges-lessons-and-opportunities-in-credit-risk-modeling) 
