@@ -191,12 +191,12 @@ Cluster 0 has a purity of 0.78 and Cluster 1 has a purity of 0.72, generating a 
 
 | External Metrics      | Compliance Cluster | Default Cluster     |
 | :---:        |    :----:   |         :---:   |
-| Precision Score| 0.85  | 0.63  |
-| Recall Score |  0.88      | 0.56      |
-| F-measure | 0.86       | 0.60      |
-| Accuracy Score | 0.80       | 0.80     |
+| Precision Score| 0.97  | 0.22  |
+| Recall Score |  0.78      | 0.72      |
+| F-measure | 0.87       | 0.34      |
+| Accuracy Score | 0.78       | 0.78     |
 
-The GMM model is 80% accurate for both clusters, and the Compliance cluster represents and recovers the ground truth data better than the Default cluster. This could be due to the fact that there are less samples with the default label than the compliance label in the training data. To address this, future work could entail generating more data that falls in the default class or clustering with more components so that each cluster better represents a single class.
+The GMM model is 78% accurate for both clusters, and the Compliance cluster represents and recovers the ground truth data better than the Default cluster. This could be due to the fact that there are less samples with the default label than the compliance label in the training data. To address this, future work could entail generating more data that falls in the default class or clustering with more components so that each cluster better represents a single class.
 
 ### Supervised Learning
 After training an XGBoost classifier with 100 trees and max_depth of 3, we get the following metrics:
