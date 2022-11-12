@@ -71,7 +71,7 @@ Each customer ID has several data points. Each missing value is replaced with th
 3. Customized preprocessing steps.  
 Different types of learning required specialized preprocessing pipeline. For each training model, we will build a custom preprocessing pipeline optimized for that model.
 - KMeans: we first normalize the data along each feature, then use the _Principle Component Analysis (PCA)_ to compress the feature space while preserving 95% of the variance in the data. 
-> __*TO DO*__: fill in the preprocessing for the GMM method   
+- GMM: we use the normalized PCA data described in the Kmeans preprocessing section above and separate it into an 80-20 train-test split in order to compute internal and external metrics on the train split and visualize the performance of GMM on the test split. 
 > __*TO DO*__: fill in the preprocessing for the gradient boosting method.
 
 ## Data Visualization    
@@ -118,6 +118,13 @@ The role of unsupervised learning will be to understand the hidden data structur
 Kmeans algorithm separates data into n clusters that minimizes the distance between the data points and the cluster centroids. Because our problem is a binary classification, we use Kmeans to divide the data into two clusters and classify each cluster based on the majority of the votes of the k-nearest neighbors. 
 
 The preprocessing pipeline for KMEANs consists of 1) the general preprocessing where the missing values are populated with the mean of each feature grouped by customer ID, 2) data normalization along the features, 3) dimensionality reduction with PCA that captures 95% of the variance in the data.
+
+#### GMM
+Our data may not be spherically clustered, so it is beneficial to also run GMM to obtain soft clusterings for our data points and derive the pdfs for the Gaussian components our data distribution resembles in the process. Since GMM optimizes for both the mean and covariance of each Gaussian component, and it is likely that covariance impacts the distribution of our data, we run GMM with 2 components to obtain Gaussian pdfs that represent the two classes in our problem (compliance and default). 
+
+The preprocessing pipeline for GMM consists of 1) the general preprocessing where the missing values are populated with the mean of each feature grouped by customer ID, 2) data normalization along the features, 3) dimensionality reduction with PCA that captures 95% of the variance in the data, 4) holding out 20% of the dataset for visualization of the GMM model's performance on unseen data. 
+
+We fit 5 GMM models to the train dataset, each of which ingests an increasingly large subspace of the feature sapce (the first 10, 30, 50, 70, and 90 PCA features, respectively). These features account for roughly 40%, 60%, 80%, 85%, and 95% of the variance in the original train data, respectively. We also train a GMM model on all of the PCA features for comparison to these first 5 models. 
 
 
 ### Supervised
@@ -189,6 +196,31 @@ We do a more in-depth analysis of our Kmeans model by looking at several externa
 | Recall Score |  0.88      | 0.77      |
 | F-measure | 0.89       | 0.85      |
 | Accurity Score | 0.85       | 0.85     |
+
+#### GMM
+The 5 GMM models we train initially converge after 14, 15, 30, 19, and 28 iterations, respectively. We visualize their performance below: 
+
+
+Interestingly, the clustering decision appears to nearly swap for each sample in the second GMM model and then reverts to its original distribution in the third GMM model. This indicates that making the clustering decision with GMM using a small subset of the features may generate similar results as using a large subset, so it may not be necessary to keep all of the PCA features for our data modeling going forward. 
+
+The GMM model we train on all of the PCA features converges after 21 iterations. We compare its predictions to the truth values for a sample of the train data below:
+
+The silhouette score for the full-feature GMM model is 0.46, the Beta-CV score is 0.096, and the Davies-Bouldin index is 3.303. The decent silhouette score is likely due to the fact that we only ran GMM with 2 components, which may cause the points in each cluster to be closer to the other cluster than if we generated more Gaussian PDFs to describe the model (since the decision boundary is likely closer to any given data point than if there were more clusters). The Beta-CV score is very small, indicating the data within each cluster are close to one another. 
+
+Below is the confusion matrix for the full-feature GMM model on the train split:
+
+
+Cluster 0 has a purity of 0.78 and Cluster 1 has a purity of 0.72, generating a total purity of 0.78. This indicates that both clusters roughly correspond to 1 class each. 
+
+
+| External Metrics      | Compliance Cluster | Default Cluster     |
+| :---:        |    :----:   |         :---:   |
+| Precision Score| 0.85  | 0.63  |
+| Recall Score |  0.88      | 0.56      |
+| F-measure | 0.86       | 0.60      |
+| Accuracy Score | 0.80       | 0.80     |
+
+The GMM model is 80% accurate for both clusters, and the Compliance cluster represents and recovers the ground truth data better than the Default cluster. This could be due to the fact that there are less samples with the default label than the compliance label in the training data. To address this, future work could entail generating more data that falls in the default class or clustering with more components so that each cluster more accurately represents a single class.
 
 ### Supervised Learning
 In the Kaggle competition, the best-performing models achieve scores of 0.80 in this metric, and we hope to achieve accuracy close to that. However, we will face some difficulties because the test data is not merely a random sample of the training data. The test data covers not only a separate set of customers, but also a different time period.
