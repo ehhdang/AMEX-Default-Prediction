@@ -66,13 +66,13 @@ We use an ordinal encoder to encode categorical features because deliquency vari
 <a name="myfootnote1">*</a> This feature is not encoded because their data are not used in training models.
 
 2. Predict missing values.  
-Each customer ID has several data points. Each missing value is replaced with the mean of the __feature__ data grouped by customer ID.
+Each customer ID has several data points. Each missing value is replaced with the mean of the __feature__ data grouped by a customer ID. After this step, some customers still have NaN values because some features were missing for all rows of those customers. 
 
 3. Customized preprocessing steps.  
 Different types of learning required specialized preprocessing pipeline. For each training model, we will build a custom preprocessing pipeline optimized for that model.
-- KMeans: we first normalize the data along each feature, then use the _Principle Component Analysis (PCA)_ to compress the feature space while preserving 95% of the variance in the data. 
+- KMeans: we first replace any missing values with -1. Then we aggregate the data by the mean of customer ID such that each row corresponds to the mean of all data points of a unique customer. Then, we normalize the data along each feature, and use the _Principle Component Analysis (PCA)_ to compress the feature space while preserving 95% of the variance in the data. 
 - GMM: we use the normalized PCA data described in the Kmeans preprocessing section above and separate it into an 80-20 train-test split in order to compute internal and external metrics on the train split and visualize the performance of GMM on the test split. 
-> __*TO DO*__: fill in the preprocessing for the gradient boosting method.
+- Gradient Boosting: we simply replace any missing values with zeros.
 
 ## Data Visualization    
 Data visualization is an important step in machine learning. With a good visualization, we can discover trends and patterns in the data. In this section, we attempt to visualize the AMEX dataset. We first reduce the feature space of our data by using _Principle Component Analysis (PCA)_ and _t-distributed stochastic neighbor embedding (t-SNE)_. Then we show the graph of the data set projected on several components that preserve the most amount of variance. We hope to obtain some insights about the AMEX dataset and use the knowledge to guide our model selection and training.
