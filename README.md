@@ -120,7 +120,7 @@ Kmeans algorithm separates data into n clusters that minimizes the distance betw
 The preprocessing pipeline for KMEANs consists of 1) the general preprocessing where the missing values are populated with the mean of each feature grouped by customer ID, 2) data normalization along the features, 3) dimensionality reduction with PCA that captures 95% of the variance in the data.
 
 #### GMM
-Our data may not be spherically clustered, so it is beneficial to also run GMM to obtain soft clusterings for our data points and derive the pdfs for the Gaussian components our data distribution resembles in the process. Since GMM optimizes for both the mean and covariance of each Gaussian component, and it is likely that covariance impacts the distribution of our data, we run GMM with 2 components to obtain Gaussian pdfs that represent the two classes in our problem (compliance and default). 
+Our data may not be spherically clustered, so it is beneficial to also run GMM to obtain soft clusterings for our data points and derive the PDFs for the Gaussian components our data distribution resembles in the process. Since GMM optimizes for both the mean and covariance of each Gaussian component, and it is likely that covariance impacts the distribution of our data, we run GMM with 2 components to obtain Gaussian PDFs that represent the two classes in our problem (compliance and default). 
 
 The preprocessing pipeline for GMM consists of 1) the general preprocessing where the missing values are populated with the mean of each feature grouped by customer ID, 2) data normalization along the features, 3) dimensionality reduction with PCA that captures 95% of the variance in the data, 4) holding out 20% of the dataset for visualization of the GMM model's performance on unseen data. 
 
@@ -181,14 +181,13 @@ The GMM model we train on all of the PCA features converges after 21 iterations.
 
 ![GMM_vs_true](https://user-images.githubusercontent.com/70713066/201459831-a6899599-6d8b-4367-9da5-78e67cf735e6.png)
 
-The silhouette score for the full-feature GMM model is 0.46, the Beta-CV score is 0.096, and the Davies-Bouldin index is 3.303. The decent silhouette score is likely due to the fact that we only ran GMM with 2 components, which may cause the points in each cluster to be closer to the other cluster than if we generated more Gaussian PDFs to describe the model (since the decision boundary is likely closer to any given data point than if there were more clusters). The Beta-CV score is very small, indicating the data within each cluster are close to one another. 
+The silhouette score for the full-feature GMM model is __0.46__, the Beta-CV score is __0.096__, and the Davies-Bouldin index is __3.303__. The decent silhouette score is likely due to the fact that we only ran GMM with 2 components, which may cause the points in each cluster to be closer to the other cluster than if we generated more Gaussian PDFs to describe the model (since the decision boundary is likely closer to any given data point than if there were more clusters). The Beta-CV score is very small, indicating the data within each cluster are close to one another. 
 
 Below is the confusion matrix for the full-feature GMM model on the train split:
 
 ![confusion_matrix](https://user-images.githubusercontent.com/70713066/201459830-bd298184-4204-44a8-97cb-e2e9049b8b90.png)
 
 Cluster 0 has a purity of 0.78 and Cluster 1 has a purity of 0.72, generating a total purity of 0.78. This indicates that both clusters roughly correspond to 1 class each. 
-
 
 | External Metrics      | Compliance Cluster | Default Cluster     |
 | :---:        |    :----:   |         :---:   |
@@ -197,7 +196,7 @@ Cluster 0 has a purity of 0.78 and Cluster 1 has a purity of 0.72, generating a 
 | F-measure | 0.86       | 0.60      |
 | Accuracy Score | 0.80       | 0.80     |
 
-The GMM model is 80% accurate for both clusters, and the Compliance cluster represents and recovers the ground truth data better than the Default cluster. This could be due to the fact that there are less samples with the default label than the compliance label in the training data. To address this, future work could entail generating more data that falls in the default class or clustering with more components so that each cluster more accurately represents a single class.
+The GMM model is 80% accurate for both clusters, and the Compliance cluster represents and recovers the ground truth data better than the Default cluster. This could be due to the fact that there are less samples with the default label than the compliance label in the training data. To address this, future work could entail generating more data that falls in the default class or clustering with more components so that each cluster better represents a single class.
 
 ### Supervised Learning
 After training an XGBoost classifier with 100 trees and max_depth of 3, we get the following metrics:
