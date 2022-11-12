@@ -173,15 +173,19 @@ We do a more in-depth analysis of our Kmeans model by looking at several externa
 #### GMM
 The 5 GMM models we train initially converge after 14, 15, 30, 19, and 28 iterations, respectively. We visualize their performance below: 
 
+![GMMs_PCA_features](https://user-images.githubusercontent.com/70713066/201459828-862accc3-fe5c-46c5-a6d6-ab581ec266b4.png)
 
 Interestingly, the clustering decision appears to nearly swap for each sample in the second GMM model and then reverts to its original distribution in the third GMM model. This indicates that making the clustering decision with GMM using a small subset of the features may generate similar results as using a large subset, so it may not be necessary to keep all of the PCA features for our data modeling going forward. 
 
 The GMM model we train on all of the PCA features converges after 21 iterations. We compare its predictions to the truth values for a sample of the train data below:
 
+![GMM_vs_true](https://user-images.githubusercontent.com/70713066/201459831-a6899599-6d8b-4367-9da5-78e67cf735e6.png)
+
 The silhouette score for the full-feature GMM model is 0.46, the Beta-CV score is 0.096, and the Davies-Bouldin index is 3.303. The decent silhouette score is likely due to the fact that we only ran GMM with 2 components, which may cause the points in each cluster to be closer to the other cluster than if we generated more Gaussian PDFs to describe the model (since the decision boundary is likely closer to any given data point than if there were more clusters). The Beta-CV score is very small, indicating the data within each cluster are close to one another. 
 
 Below is the confusion matrix for the full-feature GMM model on the train split:
 
+![confusion_matrix](https://user-images.githubusercontent.com/70713066/201459830-bd298184-4204-44a8-97cb-e2e9049b8b90.png)
 
 Cluster 0 has a purity of 0.78 and Cluster 1 has a purity of 0.72, generating a total purity of 0.78. This indicates that both clusters roughly correspond to 1 class each. 
 
