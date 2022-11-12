@@ -242,5 +242,5 @@ The project's timeline and task breakdown are detailed in this [Gantt chart](htt
 ## Contribution Table for the Midterm Report
  - Hassan Naveed: Method, Result and Discussion for the Gradient Boosting model.
  - Aditi Prakash: Method, Result and Discussion for the GMM model.
- - Emma Dang: Data Preprocessing, Method, Result, and Discussion for KMEANS model.
+ - Emma Dang: Data Preprocessing, PCA model, Method, Result, and Discussion for KMEANS model.
  - Amritpal Singh: Data Cleaning and Preprocessing, PCA and tSNE models.
