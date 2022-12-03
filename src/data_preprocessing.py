@@ -1,11 +1,13 @@
 import pandas as pd
+import numpy as np
 import pyarrow
 from time import time
 from sklearn.model_selection import train_test_split
 from sklearn.impute import SimpleImputer
-from sklearn.preprocessing import StandardScaler, MinMaxScaler 
-
-from .constants import paths
+from sklearn.preprocessing import StandardScaler, MinMaxScaler, OneHotEncoder
+from scipy import stats
+from .constants import *
+from src.data_preprocessing import *
 
 def groupwise_mean(df_path , start_row  = None, end_row = None):
 
@@ -138,7 +140,7 @@ def custom_processing(x_train , x_test , y_train , y_test):
 
 
 def get_long_train_labels(labels, train_data):
-    """Create a 2D scatterplot of components and labels
+    """merges labels with training data
     Args:
         labels (pd.DataFrame): (N,D) A dataframe containing the customer_ids, with one entry for each customer
         train_data (pd.DataFrame): (N*12, D) A dataframe containing the customer_ids
@@ -146,3 +148,143 @@ def get_long_train_labels(labels, train_data):
         labels_long (pd.DataFrame): (N*12,D) A longer version of the training labels where each entry in labels corresponds to the training data.
     """
     return train_data[['customer_ID']].merge(labels)
+
+###########################################################################################
+##################### Section 2: Feature Creation     #####################################
+###########################################################################################
+
+
+
+# Custom transformation strategies for binary, categorical and continuous variables
+
+def transform_binary_vars(data, transformations = ['last', 'mean']):
+    """ returns binary variables aggregated at customer level
+    Args:
+        data (pd.DataFrame): (N*12, D) A dataframe containing the customer information
+    Returns:
+        data_agg (pd.DataFrame): (N,B*T) A shorter version of the training data with T transformations applied to each of the B binary variables
+    """
+    data_b = data[['customer_ID']+ binary_columns].copy()
+    data_b = data_b.replace(-1, np.nan) # replace -1's with nans to prevent issues
+
+    data_agg = data_b[['customer_ID']].drop_duplicates()
+
+    if 'mean' in transformations:
+        temp = data_b.groupby('customer_ID', as_index = False).aggregate('mean').add_suffix("_binary_mean").rename({"customer_ID_binary_mean":"customer_ID"}, axis = 1)
+        data_agg = data_agg.merge(temp)
+
+    if 'last' in transformations:
+        temp = data_b.groupby('customer_ID', as_index = False).aggregate('last').add_suffix("_binary_last").rename({"customer_ID_binary_last":"customer_ID"}, axis = 1)
+        data_agg = data_agg.merge(temp)
+    
+    # note: mode is extremely slow: a better implementation is needed
+    if 'mode' in transformations:
+        temp = data_b.groupby('customer_ID', as_index = False).aggregate(stats.mode).add_suffix("_binary_mode").rename({"customer_ID_binary_mode":"customer_ID"}, axis = 1)
+        data_agg = data_agg.merge(temp)
+
+    data_agg = data_agg.replace( np.nan,0) # replace nans with zeros to prevent issues
+
+    return data_agg
+
+def transform_categorical_vars(data, transformations = ['last', 'mean','counts']):
+    """ returns categorical variables aggregated at customer level
+    Args:
+        data (pd.DataFrame): (N*12, D) A dataframe containing the customer information
+    Returns:
+        data_agg (pd.DataFrame): (N,C*T) A shorter version of the training data with T transformations applied to each of the C categorical variables
+    """
+    data_c = data[['customer_ID']+ categorical_variables].copy()
+    data_c = data_c.replace(-1,np.nan) # replace -1's with nans to prevent issues
+    data_agg = data_c[['customer_ID']].drop_duplicates()
+
+    if 'mean' in transformations:
+        temp = data_c.groupby('customer_ID', as_index = False).aggregate('mean').add_suffix("_cat_mean").rename({"customer_ID_cat_mean":"customer_ID"}, axis = 1)
+        data_agg = data_agg.merge(temp)
+
+    if 'last' in transformations:
+        temp = data_c.groupby('customer_ID', as_index = False).aggregate('last').add_suffix("_cat_last").rename({"customer_ID_cat_last":"customer_ID"}, axis = 1)
+        data_agg = data_agg.merge(temp)
+
+    if 'counts' in transformations:
+        # replace missing
+        data_c_2 = data_c.replace(np.nan,0).copy()
+        data_c_2[categorical_variables] = data_c_2[categorical_variables].astype(int)
+
+        # one hot encoding
+        enc = OneHotEncoder(handle_unknown='ignore', dtype = int, sparse=False)
+        data_c_enc = enc.fit_transform(data_c_2[categorical_variables])
+        col_names = enc.get_feature_names_out(categorical_variables)
+        temp = pd.DataFrame(data_c_enc)
+        temp.columns = col_names
+        temp['customer_ID'] = data['customer_ID']
+
+        # aggregate with counts (sum)
+        temp = temp.groupby('customer_ID', as_index = False).aggregate('mean').add_suffix("_cat_count").rename({"customer_ID_cat_count":"customer_ID"}, axis = 1)
+
+        # merge with other columns
+        data_agg = data_agg.merge(temp)
+
+    data_agg = data_agg.replace( np.nan,0) # replace nans with zeros to prevent issues
+
+    return data_agg
+
+
+def transform_continuous_vars(data, transformations = ['last', 'mean','max','min']):
+    """ returns binary variables aggregated at customer level
+    Args:
+        data (pd.DataFrame): (N*12, D) A dataframe containing the customer information
+    Returns:
+        data_agg (pd.DataFrame): (N,C*T) A shorter version of the training data with T transformations applied to each of the C continous variables
+    """
+
+    # get list of continous variables (these are not in binary or categorical)
+    continuous_variables = []
+    for col in data.columns[2:]:
+        if col not in binary_columns and col not in categorical_variables:
+            continuous_variables.append(col)
+
+    data_c = data[['customer_ID']+ continuous_variables].copy()
+    data_c = data_c.replace(-1, np.nan) # replace -1's with nans to prevent issues
+
+    data_agg = data_c[['customer_ID']].drop_duplicates()
+
+    if 'mean' in transformations:
+        temp = data_c.groupby('customer_ID', as_index = False).aggregate('mean').add_suffix("_mean").rename({"customer_ID_mean":"customer_ID"}, axis = 1)
+        data_agg = data_agg.merge(temp)
+
+    if 'last' in transformations:
+        temp = data_c.groupby('customer_ID', as_index = False).aggregate('last').add_suffix("_last").rename({"customer_ID_last":"customer_ID"}, axis = 1)
+        data_agg = data_agg.merge(temp)
+    if 'min' in transformations:
+        temp = data_c.groupby('customer_ID', as_index = False).aggregate('min').add_suffix("_min").rename({"customer_ID_min":"customer_ID"}, axis = 1)
+        data_agg = data_agg.merge(temp)
+    if 'max' in transformations:
+        temp = data_c.groupby('customer_ID', as_index = False).aggregate('max').add_suffix("_max").rename({"customer_ID_max":"customer_ID"}, axis = 1)
+        data_agg = data_agg.merge(temp)
+
+    # impute missing
+    imp = SimpleImputer(strategy="mean")
+    x = data_agg.iloc[:,1:]
+    data_agg.iloc[:,1:] = pd.DataFrame(imp.fit_transform(x) , columns = x.columns)
+
+    return data_agg
+
+
+def create_features(data, labels):
+    # perform transformations using previous functions
+    data_binary = transform_binary_vars(data)
+    data_cat = transform_categorical_vars(data)
+    data_continuous = transform_continuous_vars(data)
+
+    # merge features
+    data_agg = data_binary.merge(data_cat)
+    data_agg = data_agg.merge(data_continuous)
+
+    # add labels
+    data_agg = data_agg.merge(labels)
+    X = data_agg.drop(['customer_ID','target'], axis = 1)
+    y = np.array(data_agg['target'])
+
+    return X, y
+
+
