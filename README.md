@@ -97,6 +97,7 @@ The next figure shows the data projected onto every pair of the first seven PCA 
 
 ### t-SNE
 
+
 ![2D Data Projection on tSNE Components](images/tsne/tsne_projection_2D_amrit.png)
 
 *Figure 4: Training Data Projection on two tSNE Components.*
@@ -105,14 +106,16 @@ The next figure shows the data projected onto every pair of the first seven PCA 
 
 *Figure 5: Training Data Projection on three tSNE Components*
 
-> __*TO DO:*__: some analysis of the tSNE results?
+t-SNE (t-distributed Stochastic Neighbor Embedding) :  This is a nonlinear dimensionality reduction, so it can seperate data that are not linearly seperable using PCA. t-SNE is also iterative, so unlike PCA it cannot be applied to another dataset. One of the hyperparamter for  tSNE is perplexity, which represents how to balance attention between local and global aspects of data. 
+
+In Figure 4, we can results of tSNE to reduce the dimensions of data to 2d plane. Since, tSNE is a non-linear dimensionality reduction, we can see orange cluster forming in lower half of graph. Figure 5 shows similar tSNE representation in 3d space. 
 
 
 ## Methods:
 ### Unsupervised
 The role of unsupervised learning will be to understand the hidden data structures for better feature processing. 
 -  Clustering algorithms: visualize the data to allow better feature processing.
--  Dimensionality reduction (PCA, tSNE and UMAP): Given a total of 190+ features, methods like tSNE and PCA can help visualize the data points and choose relevant features. Reduced feature count could also help boost training speed for supervised methods.
+-  Dimensionality reduction (PCA, tSNE): Given a total of 190+ features, methods like tSNE and PCA can help visualize the data points and choose relevant features. Reduced feature count could also help boost training speed for supervised methods.
 
 #### KMEANS
 Kmeans algorithm separates data into n clusters that minimizes the distance between the data points and the cluster centroids. Because our problem is a binary classification, we use Kmeans to divide the data into two clusters and classify each cluster based on the majority of the votes of the k-nearest neighbors. 
