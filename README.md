@@ -106,9 +106,9 @@ The next figure shows the data projected onto every pair of the first seven PCA 
 
 *Figure 5: Training Data Projection on three tSNE Components*
 
-t-SNE (t-distributed Stochastic Neighbor Embedding) :  This is a nonlinear dimensionality reduction, so it can seperate data that are not linearly seperable using PCA. t-SNE is also iterative, so unlike PCA it cannot be applied to another dataset. One of the hyperparamter for  tSNE is perplexity, which represents how to balance attention between local and global aspects of data. 
+t-SNE (t-distributed Stochastic Neighbor Embedding) :  tSNE is a nonlinear dimensionality reduction, so it can seperate data that are not linearly seperable using PCA. t-SNE is also iterative, so unlike PCA it cannot be applied to another dataset. One of the hyperparamter for  tSNE is perplexity, which represents how to balance attention between local and global aspects of data. 
 
-In Figure 4, we can results of tSNE to reduce the dimensions of data to 2d plane. Since, tSNE is a non-linear dimensionality reduction, we can see orange cluster forming in lower half of graph. Figure 5 shows similar tSNE representation in 3d space. 
+In Figure 4, we see the results of tSNE to reduce the dimensions of data to 2d space. tSNE is a non-linear dimensionality reduction, which can be useful in certain usecases. We can see orange cluster forming in lower half of graph. Figure 5 shows similar tSNE representation in 3d space. 
 
 
 ## Methods:
