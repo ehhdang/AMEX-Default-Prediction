@@ -192,7 +192,7 @@ We do a more in-depth analysis of our Kmeans model by looking at several externa
 | Precision Score| 0.92  | 0.69  |
 | Recall Score |  0.88      | 0.77      |
 | F-measure | 0.89       | 0.85      |
-| Accurity Score | 0.85       | 0.85     |
+| Accurity Score | 0.85       | 0.85    |
 
 #### GMM
 The 5 GMM models we train initially converge after 14, 15, 30, 19, and 28 iterations, respectively. We visualize their performance below: 
@@ -241,7 +241,7 @@ The metrics G, D and M are defined by the competion and are highlighted in the [
 
 The confusion matrix with this sample in the validation set for Boosted trees is shown below:
 
-![XGboost Confusion Matrix](images/supervised_learning/confusion_matrix.png)
+![XGboost Confusion Matrix](images/supervised_learning/confusion_matrix.jpg)
 
 Below is a visual depiction of the AUC curve, which takes into account the false positive and false negative rates at various thresholds:
 
@@ -252,6 +252,11 @@ The red line demoonstrates the default rate at 4%, which is a required metric fo
 In the Kaggle competition, the best-performing models achieve scores of 0.80 in this metric. One of the main difficulties is that the test data is not a random sample of the training data. The test data covers not only a separate set of customers, but also a different time period.
 
 Our initial results show the M score around 0.78 in the validation set and we hope this score on the test set will be close to this. There is still a few improvements that need to made to reach state of the art performance.
+
+## Conclusion
+The AMEX dataset contains over 5 million data points over 180 features. We developed a data - preprocessing pipeline that aggregates the samples by customer ID and reduces the dimensionality of the data set with state-of-the-art methods like PCA and t-SNE. Initial data visualization of the PCA components suggests that our dataset is highly non-linear in the decision boundary between the default and compliance class. We tried two unsupervised methods, KMEANS and GMM, to generate predictive models. Although KMEANS gives an accuracy of 85%, the precision score of the default cluster is low with a value of 69%. The high precision score (92%) of the compliance cluster pulls the overal accuracy up to 85%. Similarly, our GMM model predicts the default cluster poorly with a 22% precision score. The 97% precision score of the compliance cluster averages the final accuracy to 79%. The discrepency in two clusters could stem from the fact that there are more samples with compliance label than those with default labels. Another explanation is that unsupervised methods do not predict data with overlapped and non-linearly separable data points well compared to supervised methods. This understanding leads to our attempts to use supervised methods such as gradient boosting and neural nets to build predictive models for the AMEX dataset.
+
+
 
 ## References
 1. [Machine Learning: Challenges, Lessons, and Opportunities in Credit Risk Modelling](https://www.moodysanalytics.com/risk-perspectives-magazine/managing-disruption/spotlight/machine-learning-challenges-lessons-and-opportunities-in-credit-risk-modeling) 
@@ -264,7 +269,7 @@ Our initial results show the M score around 0.78 in the validation set and we ho
 The project's timeline and task breakdown are detailed in this [Gantt chart](https://docs.google.com/spreadsheets/d/1NwSPawBI_k9x3xHloXmnbROMbCaqwuFalB0XVgNrCJ8/edit?usp=sharing).
 
 ## Contribution Table for the Midterm Report
- - Hassan Naveed: Method, Result and Discussion for the Gradient Boosting model.
+ - Hassan Naveed: Method, Result and Discussion for the Gradient Boosting model and the Neural Net model.
  - Aditi Prakash: Method, Result and Discussion for the GMM model.
  - Emma Dang: Data Preprocessing, PCA model, Method, Result, and Discussion for KMEANS model.
  - Amritpal Singh: Data Cleaning and Preprocessing, PCA and tSNE models.
