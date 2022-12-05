@@ -183,10 +183,12 @@ def transform_binary_vars(data, transformations = ['last', 'mean']):
         data_agg = data_agg.merge(temp)
 
     data_agg = data_agg.replace( np.nan,0) # replace nans with zeros to prevent issues
+    
+    print("transformed binary features")
 
     return data_agg
 
-def transform_categorical_vars(data, transformations = ['last', 'mean','counts']):
+def transform_categorical_vars(data, transformations = ['last', 'mean','counts','nunique']):
     """ returns categorical variables aggregated at customer level
     Args:
         data (pd.DataFrame): (N*12, D) A dataframe containing the customer information
@@ -226,10 +228,12 @@ def transform_categorical_vars(data, transformations = ['last', 'mean','counts']
 
     data_agg = data_agg.replace( np.nan,0) # replace nans with zeros to prevent issues
 
+    print("transformed categorical features")
+
     return data_agg
 
 
-def transform_continuous_vars(data, transformations = ['last', 'mean','max','min']):
+def transform_continuous_vars(data, transformations = ['last', 'mean','max','min','std']):
     """ returns binary variables aggregated at customer level
     Args:
         data (pd.DataFrame): (N*12, D) A dataframe containing the customer information
@@ -248,6 +252,7 @@ def transform_continuous_vars(data, transformations = ['last', 'mean','max','min
 
     data_agg = data_c[['customer_ID']].drop_duplicates()
 
+    # make aggregations
     if 'mean' in transformations:
         temp = data_c.groupby('customer_ID', as_index = False).aggregate('mean').add_suffix("_mean").rename({"customer_ID_mean":"customer_ID"}, axis = 1)
         data_agg = data_agg.merge(temp)
@@ -266,6 +271,12 @@ def transform_continuous_vars(data, transformations = ['last', 'mean','max','min
     imp = SimpleImputer(strategy="mean")
     x = data_agg.iloc[:,1:]
     data_agg.iloc[:,1:] = pd.DataFrame(imp.fit_transform(x) , columns = x.columns)
+
+    # scale values
+    # scaler = StandardScaler()
+    # data_agg.iloc[:,1:] = scaler.fit_transform(data_agg.iloc[:,1:])
+
+    print("transformed continuous features")
 
     return data_agg
 
