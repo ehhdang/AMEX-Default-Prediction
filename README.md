@@ -229,8 +229,8 @@ Below is a comparison of XGBoost classifier (with 100 trees and max_depth of 3) 
 | :---:        |    :---:   | :---: 
 | Precision Score| 0.8023 | 0.8105
 | Recall Score |  0.7837  | 0.776
-| F-measure | 0.894   | 0.895
-| Accuracy Score | 0.793  | 0.792
+| Accuracy Score | 0.894   | 0.895
+| F-measure | 0.793  | 0.792
 | AUC Score | 0.9545 | 0.953
 | GINI Score (G) | 0.9091 | 0.9064
 | Default rate at 4% (D) | 0.639 | 0.6544
