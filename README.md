@@ -72,7 +72,16 @@ Each customer ID has several data points. Each missing value is replaced with th
 Different types of learning required specialized preprocessing pipeline. For each training model, we will build a custom preprocessing pipeline optimized for that model.
 - KMeans: we first replace any missing values with -1. Then we aggregate the data by the mean of customer ID such that each row corresponds to the mean of all data points of a unique customer. Then, we normalize the data along each feature, and use the _Principle Component Analysis (PCA)_ to compress the feature space while preserving 95% of the variance in the data. 
 - GMM: we use the normalized PCA data described in the Kmeans preprocessing section above and separate it into an 80-20 train-test split in order to compute internal and external metrics on the train split and visualize the performance of GMM on the test split. 
-- Gradient Boosting: we simply replace any missing values with zeros.
+- Gradient Boosted Trees and FeedForward Neural Networks: Seperate preprocssing and feature creation strategies were used based on the type of variables:  
+    | Type of Variable | Aggregations | Missing Value Imputation
+    | :---:        |    :----:   |         :---:   
+    | Binary  | `['last', 'mean']` | 0
+    | Categorical | `['last', 'mean','counts','nunique']` | 0
+    | Continous | `['last', 'mean','max','min','std']` | mean
+    
+    These aggregations resulted in a total of 724 features.
+
+
 
 ## Data Visualization    
 Data visualization is an important step in machine learning. With a good visualization, we can discover trends and patterns in the data. In this section, we attempt to visualize the AMEX dataset. We first reduce the feature space of our data by using _Principle Component Analysis (PCA)_ and _t-distributed stochastic neighbor embedding (t-SNE)_. Then we show the graph of the data set projected on several components that preserve the most amount of variance. We hope to obtain some insights about the AMEX dataset and use the knowledge to guide our model selection and training.
@@ -133,12 +142,24 @@ We fit 5 GMM models to the train dataset, each of which ingests an increasingly 
 ### Supervised
 This is primarily a Supervised Learning problem that requires binary classification. Currently, due to the large size of the dataset, 10,000 customers were used with 80% used for training and 20% for validation. Gradient Boosted trees and Neural Networks have shown promise in this domain [1,3].
 ####	Gradient Boosting (GB):  
-Boosted trees (available through sklearn) have had a great performance in credit risk modeling. However, since trees cannot make use of temporal information, the features would need to be aggregated at customer level. The current approach used the both the mean and medians of the feature values across time for each customer. So if `D_64` was a feature in the dataset, now we have the mean of D_4 for that customer as well as the median. We hope to try other aggregations of the features as well such as min, max or just the last value. Any missing values after this aggregation (when all entries for that customer and feature combination were missing) were replaced with zeros. We also tried replacing missing values with the mean, but the result was not that different. The results are shown in the [next section](https://github.com/ehhdang/AMEX-Default-Prediction#supervised-learning).
+Boosted trees (available through sklearn) have had a great performance in credit risk modeling. However, since trees cannot make use of temporal information, the features would need to be aggregated at customer level. The current approach used aggregations of feature values across time for each customer. So if `D_64` was a feature in the dataset, now we have the `mean`, `min`and `max` of D_4 for that customer. The aggregations for each variable type are described in more detail in the Data Preprocessing section. The default parameters are used for Gradient boosting, as the results were not too different by performing hyperparameter tuning. The results are shown in the [next section](https://github.com/ehhdang/AMEX-Default-Prediction#supervised-learning).
 
 #### Neural Networks: 
-A similar approach can be followed with Feed-forward networks. The temporal nature of the data makes it suitable for Long Short Term Memory (LSTM) networks, and the fixed number of periodicity might permit the use of transformers.
-
-We not only hope to compare these approaches, but also ensemble them together to get our best performing model.
+A similar approach can be followed with Feed-forward networks. Since feed-forward neural networks cannot make use of temporal data either, the same transformations as GB trees was applied. A simple model performed well for this task. Below are the model parameters:
+```
+____________________________________________________________
+ Layer (type)          Output Shape              Param #   
+============================================================
+ dense (Dense)         (None, 64)                46400     
+                                                                 
+ dense_1 (Dense)       (None, 1)                 65        
+                                                                 
+============================================================
+Total params: 46,465
+Trainable params: 46,465
+Non-trainable params: 0
+```
+This model contains two dense layers. The first dense layer is followed by a ReLU activation. However, the second one has a softmax activation to output probabilities between 0 and 1.
 
 ## Results and Discussion
 ### Evaluation Metrics
@@ -202,25 +223,25 @@ Cluster 0 has a purity of 0.78 and Cluster 1 has a purity of 0.72, generating a 
 The GMM model is 78% accurate for both clusters, and the Compliance cluster represents and recovers the ground truth data better than the Default cluster. This could be due to the fact that there are less samples with the default label than the compliance label in the training data. To address this, future work could entail generating more data that falls in the default class or clustering with more components so that each cluster better represents a single class.
 
 ### Supervised Learning
-After training an XGBoost classifier with 100 trees and max_depth of 3, we get the following metrics:
+Below is a comparison of XGBoost classifier (with 100 trees and max_depth of 3) and our Feedforward Neural Network on a holdoout validation set of 20%:
 
-| Metrics      | XG Boost Score     |
-| :---:        |    :---:   |
-| Precision Score| 0.69 |
-| Recall Score |  0.86  |
-| F-measure | 0.89   |
-| Accuracy Score | 0.86  |
-| AUC Score | 0.9419 |
-| GINI Score (G) | 0.8838 |
-| Default rate at 4% (D) | 0.53|
-|M | 0.71|
+| Metrics      | XG Boost Score     | Feedforward NN Score
+| :---:        |    :---:   | :---: 
+| Precision Score| 0.8023 | 0.8105
+| Recall Score |  0.7837  | 0.776
+| F-measure | 0.894   | 0.895
+| Accuracy Score | 0.793  | 0.792
+| AUC Score | 0.9545 | 0.953
+| GINI Score (G) | 0.9091 | 0.9064
+| Default rate at 4% (D) | 0.639 | 0.6544
+| M | 0.774 | 0.7804
 
 
 The metrics G, D and M are defined by the competion and are highlighted in the [previous section](https://github.com/ehhdang/AMEX-Default-Prediction#evaluation-metrics)
 
-The confusion matrix with this sample in the validation set is shown below:
+The confusion matrix with this sample in the validation set for Boosted trees is shown below:
 
-![XGboost Confusion Matrix](images/supervised_learning/confusion_matrix.jpg)
+![XGboost Confusion Matrix](images/supervised_learning/confusion_matrix.png)
 
 Below is a visual depiction of the AUC curve, which takes into account the false positive and false negative rates at various thresholds:
 
@@ -228,9 +249,9 @@ Below is a visual depiction of the AUC curve, which takes into account the false
 
 The red line demoonstrates the default rate at 4%, which is a required metric for this data. Here it could use some improvement. Even then, a simpled untuned xgboost will be a difficult baseline to outperform for more advanced models:
 
-In the Kaggle competition, the best-performing models achieve scores of 0.80 in this metric, and we hope to achieve accuracy close to that. However, we will face some difficulties because the test data is not merely a random sample of the training data. The test data covers not only a separate set of customers, but also a different time period.
+In the Kaggle competition, the best-performing models achieve scores of 0.80 in this metric. One of the main difficulties is that the test data is not a random sample of the training data. The test data covers not only a separate set of customers, but also a different time period.
 
-Our initial results show the M score around 0.71 in the validation set and we hope this score will be reflected in the test set as well. This will need to be improved to reach state of the art performance.
+Our initial results show the M score around 0.78 in the validation set and we hope this score on the test set will be close to this. There is still a few improvements that need to made to reach state of the art performance.
 
 ## References
 1. [Machine Learning: Challenges, Lessons, and Opportunities in Credit Risk Modelling](https://www.moodysanalytics.com/risk-perspectives-magazine/managing-disruption/spotlight/machine-learning-challenges-lessons-and-opportunities-in-credit-risk-modeling) 
