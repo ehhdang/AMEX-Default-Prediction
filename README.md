@@ -252,10 +252,20 @@ The red line demoonstrates the default rate at 4%, which is a required metric fo
 In the Kaggle competition, the best-performing models achieve scores of 0.80 in this metric. One of the main difficulties is that the test data is not a random sample of the training data. The test data covers not only a separate set of customers, but also a different time period.
 
 Our initial results show the M score around 0.78 in the validation set and we hope this score on the test set will be close to this. There is still a few improvements that need to made to reach state of the art performance.
+### Feature Importances
+We can see feature importances from our XGboost classifier below:
+
+![Feature Importances](images/supervised_learning/feature_importances.png)
+
+A few trends that emerge from this are:
+- among the aggregations made, the last statement was usually a good summarization of the customer's information.
+- continous variables were more important when deciding on splits
+- The pricing variable `P_2` was by far the most important predictor in terms of feature importance
 
 ## Conclusion
 The AMEX dataset contains over 5 million data points over 180 features. We developed a data - preprocessing pipeline that aggregates the samples by customer ID and reduces the dimensionality of the data set with state-of-the-art methods like PCA and t-SNE. Initial data visualization of the PCA components suggests that our dataset is highly non-linear in the decision boundary between the default and compliance class. We tried two unsupervised methods, KMEANS and GMM, to generate predictive models. Although KMEANS gives an accuracy of 85%, the precision score of the default cluster is low with a value of 69%. The high precision score (92%) of the compliance cluster pulls the overal accuracy up to 85%. Similarly, our GMM model predicts the default cluster poorly with a 22% precision score. The 97% precision score of the compliance cluster averages the final accuracy to 79%. The discrepency in two clusters could stem from the fact that there are more samples with compliance label than those with default labels. Another explanation is that unsupervised methods do not predict data with overlapped and non-linearly separable data points well compared to supervised methods. This understanding leads to our attempts to use supervised methods such as gradient boosting and neural nets to build predictive models for the AMEX dataset.
 
+This problem was primarily a classification problem, and our supervised learing methods got close to State Of The Art accuracy. Carefully engineeried features was the most important aspect. We learnt that Neural Networks ourperformed XGBoost by a small margin. A simple feedforward neural network with just one hidden layer was sufficient. In our experiments, added more layers and increasing the depth did not help, although the simplest model still contained roughly 46k parameters. Overall, we achieved an M-score of 0.78, which was slightly lower than the competition winner's score of around 0.80.
 
 
 ## References

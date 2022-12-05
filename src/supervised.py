@@ -32,7 +32,11 @@ class FeedForwardNN(object):
     def create_net(self):
         model = Sequential()
         model.add(tf.keras.Input((self.in_dims)))
-        model.add(Dense(64, activation='relu'))
+        model.add(Dropout(0.2))
+        model.add(Dense(128, activation='relu'))
+        model.add(Dropout(0.2))
+        # model.add(Dense(32, activation='relu'))
+        # model.add(Dropout(0.2))
         model.add(Dense(1, activation='sigmoid'))
 
         return model

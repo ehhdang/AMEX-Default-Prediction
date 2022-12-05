@@ -14,3 +14,7 @@ dependencies:
 - pip
 - pyarrow
 - ffmpeg
+- tensorflow
+- keras
+- scikeras
+- lightgbm
